@@ -18,6 +18,20 @@ ENTITY bat_n_ball IS
 END bat_n_ball;
 
 ARCHITECTURE Behavioral OF bat_n_ball IS
+
+    SIGNAL alien1_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(50, 11);
+    SIGNAL alien2_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(150, 11);
+    SIGNAL alien3_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(250, 11);
+    SIGNAL alien4_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(350, 11);
+    SIGNAL alien5_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(450, 11);
+    SIGNAL alien6_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(550, 11);
+    SIGNAL alien7_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(650, 11);
+    SIGNAL alien8_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(750, 11);
+    SIGNAL alien1_y, alien2_y, alien3_y, alien4_y, alien5_y, alien6_y, alien7_y, alien8_y : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(300, 11);
+    SIGNAL alien_on_screen: std_logic_vector(7 downto 0) := (OTHERS => '1');
+    SIGNAL aliensize : integer := 12;
+    SIGNAL alien_on: std_logic_vector(7 downto 0) := (OTHERS => '1');
+
     CONSTANT ball_w : INTEGER := 2; -- ball size in pixels
     CONSTANT ball_h : INTEGER := 10; -- ball size in pixels
     CONSTANT bat_w : INTEGER := 50; -- bat width in pixels
@@ -38,37 +52,37 @@ ARCHITECTURE Behavioral OF bat_n_ball IS
     SIGNAL laser_on : STD_LOGIC := '0';
 BEGIN
     red <= NOT bat_on; -- color setup for red ball and cyan bat on white background
-    green <= NOT ball_on;
-    blue <= NOT ball_on;
+    green <= NOT (alien_on(0) or alien_on(1) or alien_on(2) or alien_on(3) or alien_on(4) or alien_on(5) or alien_on(6) or alien_on(7));
+    blue <= NOT (alien_on(0) or alien_on(1) or alien_on(2) or alien_on(3) or alien_on(4) or alien_on(5) or alien_on(6) or alien_on(7));
     -- process to draw round ball
     -- set ball_on if current pixel address is covered by ball position
-    balldraw : PROCESS (ball_x, ball_y, pixel_row, pixel_col) IS
-        VARIABLE vx, vy : STD_LOGIC_VECTOR (10 DOWNTO 0); -- 9 downto 0
-    BEGIN
---        IF pixel_col <= ball_x THEN -- vx = |ball_x - pixel_col|
---            vx := ball_x - pixel_col;
---        ELSE
---            vx := pixel_col - ball_x;
---        END IF;
---        IF pixel_row <= ball_y THEN -- vy = |ball_y - pixel_row|
---            vy := ball_y - pixel_row;
---        ELSE
---            vy := pixel_row - ball_y;
---        END IF;
---        IF ((vx * vx) + (vy * vy)) < (bsize * bsize) THEN -- test if radial distance < bsize
---            ball_on <= game_on;
---        ELSE
---            ball_on <= '0';
---        END IF;
-        IF ((pixel_col >= ball_x - ball_w) OR (ball_x <= ball_w)) AND
-         pixel_col <= ball_x + ball_w AND
-             pixel_row >= ball_y - ball_h AND
-             pixel_row <= ball_y + ball_h THEN
-             ball_on <= game_on;
-        ELSE
-             ball_on <= '0';
-        end if;
-    END PROCESS;
+--     balldraw : PROCESS (ball_x, ball_y, pixel_row, pixel_col) IS
+--         VARIABLE vx, vy : STD_LOGIC_VECTOR (10 DOWNTO 0); -- 9 downto 0
+--     BEGIN
+-- --        IF pixel_col <= ball_x THEN -- vx = |ball_x - pixel_col|
+-- --            vx := ball_x - pixel_col;
+-- --        ELSE
+-- --            vx := pixel_col - ball_x;
+-- --        END IF;
+-- --        IF pixel_row <= ball_y THEN -- vy = |ball_y - pixel_row|
+-- --            vy := ball_y - pixel_row;
+-- --        ELSE
+-- --            vy := pixel_row - ball_y;
+-- --        END IF;
+-- --        IF ((vx * vx) + (vy * vy)) < (bsize * bsize) THEN -- test if radial distance < bsize
+-- --            ball_on <= game_on;
+-- --        ELSE
+-- --            ball_on <= '0';
+-- --        END IF;
+--         IF ((pixel_col >= ball_x - ball_w) OR (ball_x <= ball_w)) AND
+--          pixel_col <= ball_x + ball_w AND
+--              pixel_row >= ball_y - ball_h AND
+--              pixel_row <= ball_y + ball_h THEN
+--              ball_on <= game_on;
+--         ELSE
+--              ball_on <= '0';
+--         end if;
+--     END PROCESS;
     -- process to draw bat
     -- set bat_on if current pixel address is covered by bat position
     batdraw : PROCESS (bat_x, pixel_row, pixel_col) IS
@@ -133,4 +147,97 @@ BEGIN
 --    laser_shootshoot : process
     
 --    end process;
+
+aliendraw: PROCESS (pixel_row, pixel_col,alien1_y,alien2_y, alien3_y, alien4_y,alien5_y,alien6_y,alien7_y,alien8_y ) IS
+    BEGIN
+    -- draw first alien
+        IF alien_on_screen(0) = '1' THEN 
+            IF pixel_col >= alien1_x - aliensize AND
+            pixel_col <= alien1_x + aliensize AND
+                pixel_row >= alien1_y - aliensize AND
+                pixel_row <= alien1_y + aliensize THEN
+                   alien_on(0) <= '1';
+            ELSE
+                alien_on(0) <= '0';
+            END IF;
+        END IF;
+    -- draw second alien
+    IF alien_on_screen(1) = '1' THEN 
+            IF pixel_col >= alien2_x - aliensize AND
+            pixel_col <= alien2_x + aliensize AND
+                pixel_row >= alien2_y - aliensize AND
+                pixel_row <= alien2_y + aliensize THEN
+                   alien_on(1) <= '1';
+            ELSE
+                alien_on(1) <= '0';
+            END IF;
+        END IF;
+    -- draw third alien
+    IF alien_on_screen(2) = '1' THEN 
+            IF pixel_col >= alien3_x - aliensize AND
+            pixel_col <= alien3_x + aliensize AND
+                pixel_row >= alien3_y - aliensize AND
+                pixel_row <= alien3_y + aliensize THEN
+                   alien_on(2) <= '1';
+            ELSE
+                alien_on(2) <= '0';
+            END IF;
+        END IF;
+    -- draw fourth alien
+    IF alien_on_screen(3) = '1' THEN 
+            IF pixel_col >= alien4_x - aliensize AND
+            pixel_col <= alien4_x + aliensize AND
+                pixel_row >= alien4_y - aliensize AND
+                pixel_row <= alien4_y + aliensize THEN
+                   alien_on(3) <= '1';
+            ELSE
+                alien_on(3) <= '0';
+            END IF;
+        END IF;
+    -- draw fifth alien
+    IF alien_on_screen(4) = '1' THEN 
+            IF pixel_col >= alien5_x - aliensize AND
+            pixel_col <= alien5_x + aliensize AND
+                pixel_row >= alien5_y - aliensize AND
+                pixel_row <= alien5_y + aliensize THEN
+                   alien_on(4) <= '1';
+            ELSE
+                alien_on(4) <= '0';
+            END IF;
+        END IF;
+     -- draw sixth alien
+    IF alien_on_screen(5) = '1' THEN 
+            IF pixel_col >= alien6_x - aliensize AND
+            pixel_col <= alien6_x + aliensize AND
+                pixel_row >= alien6_y - aliensize AND
+                pixel_row <= alien6_y + aliensize THEN
+                   alien_on(5) <= '1';
+            ELSE
+                alien_on(5) <= '0';
+            END IF;
+        END IF;
+    -- draw seventh alien
+    IF alien_on_screen(6) = '1' THEN 
+            IF pixel_col >= alien7_x - aliensize AND
+            pixel_col <= alien7_x + aliensize AND
+                pixel_row >= alien7_y - aliensize AND
+                pixel_row <= alien7_y + aliensize THEN
+                   alien_on(6) <= '1';
+            ELSE
+                alien_on(6) <= '0';
+            END IF;
+        END IF;
+    -- draw eigth alien
+    IF alien_on_screen(7) = '1' THEN 
+            IF pixel_col >= alien8_x - aliensize AND
+            pixel_col <= alien8_x + aliensize AND
+                pixel_row >= alien8_y - aliensize AND
+                pixel_row <= alien8_y + aliensize THEN
+                   alien_on(7) <= '1';
+            ELSE
+                alien_on(7) <= '0';
+            END IF;
+        END IF;
+    END PROCESS;
+
 END Behavioral;
