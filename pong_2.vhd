@@ -36,7 +36,7 @@ ARCHITECTURE Behavioral OF pong IS
             pixel_row : IN STD_LOGIC_VECTOR(10 DOWNTO 0);
             pixel_col : IN STD_LOGIC_VECTOR(10 DOWNTO 0);
             bat_x : IN STD_LOGIC_VECTOR (10 DOWNTO 0);
-            serve : IN STD_LOGIC;
+            start : IN STD_LOGIC;
             shoot : IN STD_LOGIC;
             red : OUT STD_LOGIC;
             green : OUT STD_LOGIC;
@@ -92,7 +92,7 @@ BEGIN
         pixel_row => S_pixel_row, 
         pixel_col => S_pixel_col, 
         bat_x => batpos, 
-        serve => btnu,
+        start => btnu,
         shoot => btnc,
         red => S_red, 
         green => S_green, 
