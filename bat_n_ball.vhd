@@ -125,10 +125,12 @@ BEGIN
         BEGIN
         -- draw first alien
             IF alien_on_screen(0) = '1' THEN 
-                IF pixel_col >= alien1_x - aliensize AND
-                pixel_col <= alien1_x + aliensize AND
-                    pixel_row >= alien1_y - aliensize AND
-                    pixel_row <= alien1_y + aliensize THEN
+                -- IF pixel_col >= alien1_x - aliensize AND
+                -- pixel_col <= alien1_x + aliensize AND
+                --     pixel_row >= alien1_y - aliensize AND
+                --     pixel_row <= alien1_y + aliensize THEN
+                IF (((CONV_INTEGER(pixel_row) - CONV_INTEGER(alien1_y)) * (CONV_INTEGER(pixel_row) - CONV_INTEGER(alien1_y))) + ((CONV_INTEGER(pixel_col) - CONV_INTEGER(alien1_x)) * (CONV_INTEGER(pixel_col) - CONV_INTEGER(alien1_x))) <= aliensize*aliensize) AND pixel_row <= alien1_y THEN
+                    alien_on <= '1';
                     alien_on(0) <= '1';
                 ELSE
                     alien_on(0) <= '0';
