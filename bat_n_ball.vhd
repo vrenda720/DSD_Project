@@ -20,22 +20,23 @@ END bat_n_ball;
 ARCHITECTURE Behavioral OF bat_n_ball IS
 
     SIGNAL alien1_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(50, 11);
-    SIGNAL alien2_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(150, 11);
-    SIGNAL alien3_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(250, 11);
-    SIGNAL alien4_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(350, 11);
-    SIGNAL alien5_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(450, 11);
-    SIGNAL alien6_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(550, 11);
-    SIGNAL alien7_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(650, 11);
-    SIGNAL alien8_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(750, 11);
+    SIGNAL alien2_x : STD_LOGIC_VECTOR(10 DOWNTO 0); -- := CONV_STD_LOGIC_VECTOR(150, 11);
+    SIGNAL alien3_x : STD_LOGIC_VECTOR(10 DOWNTO 0); -- := CONV_STD_LOGIC_VECTOR(250, 11);
+    SIGNAL alien4_x : STD_LOGIC_VECTOR(10 DOWNTO 0); -- := CONV_STD_LOGIC_VECTOR(350, 11);
+    SIGNAL alien5_x : STD_LOGIC_VECTOR(10 DOWNTO 0); -- := CONV_STD_LOGIC_VECTOR(450, 11);
+    SIGNAL alien6_x : STD_LOGIC_VECTOR(10 DOWNTO 0); -- := CONV_STD_LOGIC_VECTOR(550, 11);
+    SIGNAL alien7_x : STD_LOGIC_VECTOR(10 DOWNTO 0); -- := CONV_STD_LOGIC_VECTOR(650, 11);
+    SIGNAL alien8_x : STD_LOGIC_VECTOR(10 DOWNTO 0); -- := CONV_STD_LOGIC_VECTOR(750, 11);
     SIGNAL alien1_y, alien2_y, alien3_y, alien4_y, alien5_y, alien6_y, alien7_y, alien8_y : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(300, 11);
     SIGNAL alien_on_screen: std_logic_vector(7 downto 0) := (OTHERS => '1');
     SIGNAL aliensize : integer := 12;
     SIGNAL alien_on: std_logic_vector(7 downto 0) := (OTHERS => '1');
-
+    SIGNAL aliens_move : STD_LOGIC_VECTOR (5 DOWNTO 0):= "000000";
+    
     CONSTANT ball_w : INTEGER := 2; -- ball size in pixels
     CONSTANT ball_h : INTEGER := 10; -- ball size in pixels
-    CONSTANT bat_w : INTEGER := 50; -- bat width in pixels
-    CONSTANT bat_h : INTEGER := 10; -- bat height in pixels
+    CONSTANT bat_w : INTEGER := 20; -- bat width in pixels
+    CONSTANT bat_h : INTEGER := 40; -- bat height in pixels
     -- distance ball moves each frame
     CONSTANT ball_speed : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR (6, 11);
     SIGNAL ball_on : STD_LOGIC; -- indicates whether ball is at current pixel position
@@ -45,12 +46,26 @@ ARCHITECTURE Behavioral OF bat_n_ball IS
     SIGNAL ball_x : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(400, 11);
     SIGNAL ball_y : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(300, 11);
     -- bat vertical position
-    CONSTANT bat_y : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(500, 11);
+    CONSTANT bat_y : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(575, 11);
     -- current ball motion - initialized to (+ ball_speed) pixels/frame in both X and Y directions
     SIGNAL ball_y_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := ball_speed;
     --signal ball_x_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000000";
     SIGNAL laser_on : STD_LOGIC := '0';
 BEGIN
+    alien2_x <= alien1_x + 100;
+    alien3_x <= alien1_x + 200;
+    alien4_x <= alien1_x + 300;
+    alien5_x <= alien1_x + 400;
+    alien6_x <= alien1_x + 500;
+    alien7_x <= alien1_x + 600;
+    alien8_x <= alien1_x + 700;
+    alien2_y <= alien1_y;
+    alien3_y <= alien1_y;
+    alien4_y <= alien1_y;
+    alien5_y <= alien1_y;
+    alien6_y <= alien1_y;
+    alien7_y <= alien1_y;
+    alien8_y <= alien1_y;
     red <= NOT bat_on; -- color setup for red ball and cyan bat on white background
     green <= NOT (alien_on(0) or alien_on(1) or alien_on(2) or alien_on(3) or alien_on(4) or alien_on(5) or alien_on(6) or alien_on(7));
     blue <= NOT ball_on;
@@ -61,11 +76,10 @@ BEGIN
     batdraw : PROCESS (bat_x, pixel_row, pixel_col) IS
         VARIABLE vx, vy : STD_LOGIC_VECTOR (10 DOWNTO 0); -- 9 downto 0
     BEGIN
-        IF ((pixel_col >= bat_x - bat_w) OR (bat_x <= bat_w)) AND
-         pixel_col <= bat_x + bat_w AND
-             pixel_row >= bat_y - bat_h AND
-             pixel_row <= bat_y + bat_h THEN
-                bat_on <= '1';
+        IF (pixel_col >= bat_x AND pixel_row <= bat_y AND pixel_row >= bat_y + (pixel_col - bat_x) - bat_h) THEN
+            bat_on <= '1';
+        elsif (pixel_col <= bat_x AND pixel_row <= bat_y AND pixel_row >= bat_y + (bat_x - pixel_col) - bat_h) THEN
+            bat_on <= '1';
         ELSE
             bat_on <= '0';
         END IF;
@@ -92,128 +106,145 @@ BEGIN
             game_on <= '1';
             ball_y_motion <= (NOT ball_speed) + 1; -- set vspeed to (- ball_speed) pixels
         END IF;
-        -- allow for bounce off bat
-        IF (ball_x + ball_w/2) >= (bat_x - bat_w) AND
-         (ball_x - ball_w/2) <= (bat_x + bat_w) AND
-             (ball_y + ball_h/2) >= (bat_y - bat_h) AND
-             (ball_y - ball_h/2) <= (bat_y + bat_h) THEN
-                ball_y_motion <= (NOT ball_speed) + 1; -- set vspeed to (- ball_speed) pixels
-        END IF;
         -- compute next ball vertical position
         -- variable temp adds one more bit to calculation to fix unsigned underflow problems
         -- when ball_y is close to zero and ball_y_motion is negative
         temp := ('0' & ball_y) + (ball_y_motion(10) & ball_y_motion);
         IF game_on = '0' or laser_on = '0' THEN
-            ball_y <= bat_y;--CONV_STD_LOGIC_VECTOR(440, 11);
+            ball_y <= bat_y - bat_h;
         ELSIF temp(11) = '1' THEN
             ball_y <= (OTHERS => '0');
         ELSE ball_y <= temp(10 DOWNTO 0); -- 9 downto 0
         END IF;
-
         IF laser_on = '0' THEN
             ball_x <= bat_x;
         END IF;
     END PROCESS;
 
-aliendraw: PROCESS (pixel_row, pixel_col,alien1_y,alien2_y, alien3_y, alien4_y,alien5_y,alien6_y,alien7_y,alien8_y ) IS
-    BEGIN
-    -- draw first alien
-        IF alien_on_screen(0) = '1' THEN 
-            IF pixel_col >= alien1_x - aliensize AND
-            pixel_col <= alien1_x + aliensize AND
-                pixel_row >= alien1_y - aliensize AND
-                pixel_row <= alien1_y + aliensize THEN
-                   alien_on(0) <= '1';
-            ELSE
-                alien_on(0) <= '0';
-            END IF;
+    aliendraw: PROCESS (pixel_row, pixel_col,alien1_y,alien2_y, alien3_y, alien4_y,alien5_y,alien6_y,alien7_y,alien8_y ) IS
+        BEGIN
+        -- draw first alien
+            IF alien_on_screen(0) = '1' THEN 
+                IF pixel_col >= alien1_x - aliensize AND
+                pixel_col <= alien1_x + aliensize AND
+                    pixel_row >= alien1_y - aliensize AND
+                    pixel_row <= alien1_y + aliensize THEN
+                    alien_on(0) <= '1';
+                ELSE
+                    alien_on(0) <= '0';
+                END IF;
         END IF;
-    -- draw second alien
-    IF alien_on_screen(1) = '1' THEN 
-            IF pixel_col >= alien2_x - aliensize AND
-            pixel_col <= alien2_x + aliensize AND
-                pixel_row >= alien2_y - aliensize AND
-                pixel_row <= alien2_y + aliensize THEN
-                   alien_on(1) <= '1';
-            ELSE
-                alien_on(1) <= '0';
-            END IF;
+        -- draw second alien
+        IF alien_on_screen(1) = '1' THEN 
+                IF pixel_col >= alien2_x - aliensize AND
+                pixel_col <= alien2_x + aliensize AND
+                    pixel_row >= alien2_y - aliensize AND
+                    pixel_row <= alien2_y + aliensize THEN
+                    alien_on(1) <= '1';
+                ELSE
+                    alien_on(1) <= '0';
+                END IF;
         END IF;
-    -- draw third alien
-    IF alien_on_screen(2) = '1' THEN 
-            IF pixel_col >= alien3_x - aliensize AND
-            pixel_col <= alien3_x + aliensize AND
-                pixel_row >= alien3_y - aliensize AND
-                pixel_row <= alien3_y + aliensize THEN
-                   alien_on(2) <= '1';
-            ELSE
-                alien_on(2) <= '0';
-            END IF;
+        -- draw third alien
+        IF alien_on_screen(2) = '1' THEN 
+                IF pixel_col >= alien3_x - aliensize AND
+                pixel_col <= alien3_x + aliensize AND
+                    pixel_row >= alien3_y - aliensize AND
+                    pixel_row <= alien3_y + aliensize THEN
+                    alien_on(2) <= '1';
+                ELSE
+                    alien_on(2) <= '0';
+                END IF;
         END IF;
-    -- draw fourth alien
-    IF alien_on_screen(3) = '1' THEN 
-            IF pixel_col >= alien4_x - aliensize AND
-            pixel_col <= alien4_x + aliensize AND
-                pixel_row >= alien4_y - aliensize AND
-                pixel_row <= alien4_y + aliensize THEN
-                   alien_on(3) <= '1';
-            ELSE
-                alien_on(3) <= '0';
-            END IF;
+        -- draw fourth alien
+        IF alien_on_screen(3) = '1' THEN 
+                IF pixel_col >= alien4_x - aliensize AND
+                pixel_col <= alien4_x + aliensize AND
+                    pixel_row >= alien4_y - aliensize AND
+                    pixel_row <= alien4_y + aliensize THEN
+                    alien_on(3) <= '1';
+                ELSE
+                    alien_on(3) <= '0';
+                END IF;
         END IF;
-    -- draw fifth alien
-    IF alien_on_screen(4) = '1' THEN 
-            IF pixel_col >= alien5_x - aliensize AND
-            pixel_col <= alien5_x + aliensize AND
-                pixel_row >= alien5_y - aliensize AND
-                pixel_row <= alien5_y + aliensize THEN
-                   alien_on(4) <= '1';
-            ELSE
-                alien_on(4) <= '0';
-            END IF;
+        -- draw fifth alien
+        IF alien_on_screen(4) = '1' THEN 
+                IF pixel_col >= alien5_x - aliensize AND
+                pixel_col <= alien5_x + aliensize AND
+                    pixel_row >= alien5_y - aliensize AND
+                    pixel_row <= alien5_y + aliensize THEN
+                    alien_on(4) <= '1';
+                ELSE
+                    alien_on(4) <= '0';
+                END IF;
         END IF;
-     -- draw sixth alien
-    IF alien_on_screen(5) = '1' THEN 
-            IF pixel_col >= alien6_x - aliensize AND
-            pixel_col <= alien6_x + aliensize AND
-                pixel_row >= alien6_y - aliensize AND
-                pixel_row <= alien6_y + aliensize THEN
-                   alien_on(5) <= '1';
-            ELSE
-                alien_on(5) <= '0';
-            END IF;
+        -- draw sixth alien
+        IF alien_on_screen(5) = '1' THEN 
+                IF pixel_col >= alien6_x - aliensize AND
+                pixel_col <= alien6_x + aliensize AND
+                    pixel_row >= alien6_y - aliensize AND
+                    pixel_row <= alien6_y + aliensize THEN
+                    alien_on(5) <= '1';
+                ELSE
+                    alien_on(5) <= '0';
+                END IF;
         END IF;
-    -- draw seventh alien
-    IF alien_on_screen(6) = '1' THEN 
-            IF pixel_col >= alien7_x - aliensize AND
-            pixel_col <= alien7_x + aliensize AND
-                pixel_row >= alien7_y - aliensize AND
-                pixel_row <= alien7_y + aliensize THEN
-                   alien_on(6) <= '1';
-            ELSE
-                alien_on(6) <= '0';
-            END IF;
+        -- draw seventh alien
+        IF alien_on_screen(6) = '1' THEN 
+                IF pixel_col >= alien7_x - aliensize AND
+                pixel_col <= alien7_x + aliensize AND
+                    pixel_row >= alien7_y - aliensize AND
+                    pixel_row <= alien7_y + aliensize THEN
+                    alien_on(6) <= '1';
+                ELSE
+                    alien_on(6) <= '0';
+                END IF;
         END IF;
-    -- draw eigth alien
-    IF alien_on_screen(7) = '1' THEN 
-            IF pixel_col >= alien8_x - aliensize AND
-            pixel_col <= alien8_x + aliensize AND
-                pixel_row >= alien8_y - aliensize AND
-                pixel_row <= alien8_y + aliensize THEN
-                   alien_on(7) <= '1';
-            ELSE
-                alien_on(7) <= '0';
-            END IF;
+        -- draw eigth alien
+        IF alien_on_screen(7) = '1' THEN 
+                IF pixel_col >= alien8_x - aliensize AND
+                pixel_col <= alien8_x + aliensize AND
+                    pixel_row >= alien8_y - aliensize AND
+                    pixel_row <= alien8_y + aliensize THEN
+                    alien_on(7) <= '1';
+                ELSE
+                    alien_on(7) <= '0';
+                END IF;
         END IF;
     END PROCESS;
 
 
-laser_shootshoot : process(shoot, ball_y)
-begin
-    if shoot = '1' AND game_on = '1' then
-        laser_on <= '1';
-    elsif ball_y <= ball_h THEN -- dissapear at top wall
-        laser_on <= '0';
-    end if;
-end process;
+    malien : PROCESS
+        -- VARIABLE temp : STD_LOGIC_VECTOR (11 DOWNTO 0);
+    BEGIN
+        WAIT UNTIL rising_edge(v_sync);
+            -- alien_motion <= 1; -- set vspeed to (- ball_speed) pixels
+        -- -- compute next ball vertical position
+        -- -- variable temp adds one more bit to calculation to fix unsigned underflow problems
+        -- -- when ball_y is close to zero and ball_y_motion is negative
+        IF aliens_move = CONV_STD_LOGIC_VECTOR(0,6) THEN alien1_x <= alien1_x + 25;
+        ELSIF aliens_move = CONV_STD_LOGIC_VECTOR(8,6) THEN alien1_y <= alien1_y + 25;
+        ELSIF aliens_move = CONV_STD_LOGIC_VECTOR(16,6) THEN alien1_x <= alien1_x - 25;
+        ELSIF aliens_move = CONV_STD_LOGIC_VECTOR(24,6) THEN alien1_x <= alien1_x - 25;
+        ELSIF aliens_move = CONV_STD_LOGIC_VECTOR(32,6) THEN alien1_y <= alien1_y - 25;
+        ELSIF aliens_move = CONV_STD_LOGIC_VECTOR(40,6) THEN alien1_y <= alien1_y - 25;
+        ELSIF aliens_move = CONV_STD_LOGIC_VECTOR(48,6) THEN alien1_x <= alien1_x + 25;
+        ELSIF aliens_move = CONV_STD_LOGIC_VECTOR(56,6) THEN alien1_y <= alien1_y + 25;
+        END IF;
+
+        aliens_move <= aliens_move + 1;
+        -- IF aliens_move = '1' THEN alien1_x <= alien1_x - 10; aliens_move <= '0'; END IF;
+
+    END PROCESS;
+    
+
+
+    laser_shootshoot : process(shoot, ball_y)
+        begin
+            if shoot = '1' AND game_on = '1' then
+                laser_on <= '1';
+            elsif ball_y <= ball_h THEN -- dissapear at top wall
+                laser_on <= '0';
+            end if;
+    end process;
 END Behavioral;
