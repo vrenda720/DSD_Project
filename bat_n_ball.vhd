@@ -53,7 +53,7 @@ ARCHITECTURE Behavioral OF bat_n_ball IS
 BEGIN
     red <= NOT bat_on; -- color setup for red ball and cyan bat on white background
     green <= NOT (alien_on(0) or alien_on(1) or alien_on(2) or alien_on(3) or alien_on(4) or alien_on(5) or alien_on(6) or alien_on(7));
-    blue <= NOT (alien_on(0) or alien_on(1) or alien_on(2) or alien_on(3) or alien_on(4) or alien_on(5) or alien_on(6) or alien_on(7));
+    blue <= NOT ball_on;
     -- process to draw round ball
     -- set ball_on if current pixel address is covered by ball position
     -- process to draw bat
