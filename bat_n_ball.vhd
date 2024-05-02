@@ -9,7 +9,7 @@ ENTITY bat_n_ball IS
         pixel_row : IN STD_LOGIC_VECTOR(10 DOWNTO 0);
         pixel_col : IN STD_LOGIC_VECTOR(10 DOWNTO 0);
         bat_x : IN STD_LOGIC_VECTOR (10 DOWNTO 0); -- current bat x position
-        serve : IN STD_LOGIC; -- initiates serve
+        start : IN STD_LOGIC; -- initiates serve
         shoot : IN STD_LOGIC;
         red : OUT STD_LOGIC;
         green : OUT STD_LOGIC;
@@ -48,7 +48,7 @@ ARCHITECTURE Behavioral OF bat_n_ball IS
     CONSTANT bat_y : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(500, 11);
     -- current ball motion - initialized to (+ ball_speed) pixels/frame in both X and Y directions
     SIGNAL ball_y_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := ball_speed;
-    signal ball_x_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000000";
+    --signal ball_x_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000000";
     SIGNAL laser_on : STD_LOGIC := '0';
 BEGIN
     red <= NOT bat_on; -- color setup for red ball and cyan bat on white background
@@ -56,33 +56,6 @@ BEGIN
     blue <= NOT (alien_on(0) or alien_on(1) or alien_on(2) or alien_on(3) or alien_on(4) or alien_on(5) or alien_on(6) or alien_on(7));
     -- process to draw round ball
     -- set ball_on if current pixel address is covered by ball position
---     balldraw : PROCESS (ball_x, ball_y, pixel_row, pixel_col) IS
---         VARIABLE vx, vy : STD_LOGIC_VECTOR (10 DOWNTO 0); -- 9 downto 0
---     BEGIN
--- --        IF pixel_col <= ball_x THEN -- vx = |ball_x - pixel_col|
--- --            vx := ball_x - pixel_col;
--- --        ELSE
--- --            vx := pixel_col - ball_x;
--- --        END IF;
--- --        IF pixel_row <= ball_y THEN -- vy = |ball_y - pixel_row|
--- --            vy := ball_y - pixel_row;
--- --        ELSE
--- --            vy := pixel_row - ball_y;
--- --        END IF;
--- --        IF ((vx * vx) + (vy * vy)) < (bsize * bsize) THEN -- test if radial distance < bsize
--- --            ball_on <= game_on;
--- --        ELSE
--- --            ball_on <= '0';
--- --        END IF;
---         IF ((pixel_col >= ball_x - ball_w) OR (ball_x <= ball_w)) AND
---          pixel_col <= ball_x + ball_w AND
---              pixel_row >= ball_y - ball_h AND
---              pixel_row <= ball_y + ball_h THEN
---              ball_on <= game_on;
---         ELSE
---              ball_on <= '0';
---         end if;
---     END PROCESS;
     -- process to draw bat
     -- set bat_on if current pixel address is covered by bat position
     batdraw : PROCESS (bat_x, pixel_row, pixel_col) IS
@@ -102,20 +75,9 @@ BEGIN
         VARIABLE temp : STD_LOGIC_VECTOR (11 DOWNTO 0);
     BEGIN
         WAIT UNTIL rising_edge(v_sync);
-        IF serve = '1' AND game_on = '0' THEN -- test for new serve
+        IF start = '1' AND game_on = '0' THEN -- test for new serve
             game_on <= '1';
             ball_y_motion <= (NOT ball_speed) + 1; -- set vspeed to (- ball_speed) pixels
-        ELSIF ball_y <= ball_h THEN -- bounce off top wall
-            ball_y_motion <= ball_speed; -- set vspeed to (+ ball_speed) pixels
-        ELSIF ball_y + ball_h >= 600 THEN -- if ball meets bottom wall
-            ball_y_motion <= (NOT ball_speed) + 1; -- set vspeed to (- ball_speed) pixels
-            game_on <= '0'; -- and make ball disappear
-        END IF;
-        -- allow for bounce off left or right of screen
-        IF ball_x + ball_w >= 800 THEN -- bounce off right wall
-            ball_x_motion <= (NOT ball_speed) + 1; -- set hspeed to (- ball_speed) pixels
-        ELSIF ball_x <= ball_w THEN -- bounce off left wall
-            ball_x_motion <= ball_speed; -- set hspeed to (+ ball_speed) pixels
         END IF;
         -- allow for bounce off bat
         IF (ball_x + ball_w/2) >= (bat_x - bat_w) AND
@@ -128,19 +90,15 @@ BEGIN
         -- variable temp adds one more bit to calculation to fix unsigned underflow problems
         -- when ball_y is close to zero and ball_y_motion is negative
         temp := ('0' & ball_y) + (ball_y_motion(10) & ball_y_motion);
-        IF game_on = '0' THEN
+        IF game_on = '0' or laser_on = '0' THEN
             ball_y <= bat_y;--CONV_STD_LOGIC_VECTOR(440, 11);
         ELSIF temp(11) = '1' THEN
             ball_y <= (OTHERS => '0');
         ELSE ball_y <= temp(10 DOWNTO 0); -- 9 downto 0
         END IF;
-        -- compute next ball horizontal position
-        -- variable temp adds one more bit to calculation to fix unsigned underflow problems
-        -- when ball_x is close to zero and ball_x_motion is negative
-        temp := ('0' & ball_x) + (ball_x_motion(10) & ball_x_motion);
+
         IF laser_on = '0' THEN
             ball_x <= bat_x;
-        ELSE ball_x <= temp(10 DOWNTO 0);
         END IF;
     END PROCESS;
     
@@ -240,4 +198,13 @@ aliendraw: PROCESS (pixel_row, pixel_col,alien1_y,alien2_y, alien3_y, alien4_y,a
         END IF;
     END PROCESS;
 
+
+laser_shootshoot : process(shoot, ball_y)
+begin
+    if shoot = '1' then
+        laser_on <= '1';
+    elsif ball_y <= ball_h THEN -- bounce off top wall
+        laser_on <= '0';
+    end if;
+end process;
 END Behavioral;
