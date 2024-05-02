@@ -201,9 +201,9 @@ aliendraw: PROCESS (pixel_row, pixel_col,alien1_y,alien2_y, alien3_y, alien4_y,a
 
 laser_shootshoot : process(shoot, ball_y)
 begin
-    if shoot = '1' then
+    if shoot = '1' AND game_on = '1' then
         laser_on <= '1';
-    elsif ball_y <= ball_h THEN -- bounce off top wall
+    elsif ball_y <= ball_h THEN -- dissapear at top wall
         laser_on <= '0';
     end if;
 end process;
