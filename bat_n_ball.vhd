@@ -10,6 +10,7 @@ ENTITY bat_n_ball IS
         pixel_col : IN STD_LOGIC_VECTOR(10 DOWNTO 0);
         bat_x : IN STD_LOGIC_VECTOR (10 DOWNTO 0); -- current bat x position
         serve : IN STD_LOGIC; -- initiates serve
+        shoot : IN STD_LOGIC;
         red : OUT STD_LOGIC;
         green : OUT STD_LOGIC;
         blue : OUT STD_LOGIC
@@ -17,9 +18,10 @@ ENTITY bat_n_ball IS
 END bat_n_ball;
 
 ARCHITECTURE Behavioral OF bat_n_ball IS
-    CONSTANT bsize : INTEGER := 8; -- ball size in pixels
-    CONSTANT bat_w : INTEGER := 20; -- bat width in pixels
-    CONSTANT bat_h : INTEGER := 3; -- bat height in pixels
+    CONSTANT ball_w : INTEGER := 2; -- ball size in pixels
+    CONSTANT ball_h : INTEGER := 10; -- ball size in pixels
+    CONSTANT bat_w : INTEGER := 50; -- bat width in pixels
+    CONSTANT bat_h : INTEGER := 10; -- bat height in pixels
     -- distance ball moves each frame
     CONSTANT ball_speed : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR (6, 11);
     SIGNAL ball_on : STD_LOGIC; -- indicates whether ball is at current pixel position
@@ -31,7 +33,9 @@ ARCHITECTURE Behavioral OF bat_n_ball IS
     -- bat vertical position
     CONSTANT bat_y : STD_LOGIC_VECTOR(10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(500, 11);
     -- current ball motion - initialized to (+ ball_speed) pixels/frame in both X and Y directions
-    SIGNAL ball_x_motion, ball_y_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := ball_speed;
+    SIGNAL ball_y_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := ball_speed;
+    signal ball_x_motion : STD_LOGIC_VECTOR(10 DOWNTO 0) := "00000000000";
+    SIGNAL laser_on : STD_LOGIC := '0';
 BEGIN
     red <= NOT bat_on; -- color setup for red ball and cyan bat on white background
     green <= NOT ball_on;
@@ -41,21 +45,29 @@ BEGIN
     balldraw : PROCESS (ball_x, ball_y, pixel_row, pixel_col) IS
         VARIABLE vx, vy : STD_LOGIC_VECTOR (10 DOWNTO 0); -- 9 downto 0
     BEGIN
-        IF pixel_col <= ball_x THEN -- vx = |ball_x - pixel_col|
-            vx := ball_x - pixel_col;
+--        IF pixel_col <= ball_x THEN -- vx = |ball_x - pixel_col|
+--            vx := ball_x - pixel_col;
+--        ELSE
+--            vx := pixel_col - ball_x;
+--        END IF;
+--        IF pixel_row <= ball_y THEN -- vy = |ball_y - pixel_row|
+--            vy := ball_y - pixel_row;
+--        ELSE
+--            vy := pixel_row - ball_y;
+--        END IF;
+--        IF ((vx * vx) + (vy * vy)) < (bsize * bsize) THEN -- test if radial distance < bsize
+--            ball_on <= game_on;
+--        ELSE
+--            ball_on <= '0';
+--        END IF;
+        IF ((pixel_col >= ball_x - ball_w) OR (ball_x <= ball_w)) AND
+         pixel_col <= ball_x + ball_w AND
+             pixel_row >= ball_y - ball_h AND
+             pixel_row <= ball_y + ball_h THEN
+             ball_on <= game_on;
         ELSE
-            vx := pixel_col - ball_x;
-        END IF;
-        IF pixel_row <= ball_y THEN -- vy = |ball_y - pixel_row|
-            vy := ball_y - pixel_row;
-        ELSE
-            vy := pixel_row - ball_y;
-        END IF;
-        IF ((vx * vx) + (vy * vy)) < (bsize * bsize) THEN -- test if radial distance < bsize
-            ball_on <= game_on;
-        ELSE
-            ball_on <= '0';
-        END IF;
+             ball_on <= '0';
+        end if;
     END PROCESS;
     -- process to draw bat
     -- set bat_on if current pixel address is covered by bat position
@@ -79,23 +91,23 @@ BEGIN
         IF serve = '1' AND game_on = '0' THEN -- test for new serve
             game_on <= '1';
             ball_y_motion <= (NOT ball_speed) + 1; -- set vspeed to (- ball_speed) pixels
-        ELSIF ball_y <= bsize THEN -- bounce off top wall
+        ELSIF ball_y <= ball_h THEN -- bounce off top wall
             ball_y_motion <= ball_speed; -- set vspeed to (+ ball_speed) pixels
-        ELSIF ball_y + bsize >= 600 THEN -- if ball meets bottom wall
+        ELSIF ball_y + ball_h >= 600 THEN -- if ball meets bottom wall
             ball_y_motion <= (NOT ball_speed) + 1; -- set vspeed to (- ball_speed) pixels
             game_on <= '0'; -- and make ball disappear
         END IF;
         -- allow for bounce off left or right of screen
-        IF ball_x + bsize >= 800 THEN -- bounce off right wall
+        IF ball_x + ball_w >= 800 THEN -- bounce off right wall
             ball_x_motion <= (NOT ball_speed) + 1; -- set hspeed to (- ball_speed) pixels
-        ELSIF ball_x <= bsize THEN -- bounce off left wall
+        ELSIF ball_x <= ball_w THEN -- bounce off left wall
             ball_x_motion <= ball_speed; -- set hspeed to (+ ball_speed) pixels
         END IF;
         -- allow for bounce off bat
-        IF (ball_x + bsize/2) >= (bat_x - bat_w) AND
-         (ball_x - bsize/2) <= (bat_x + bat_w) AND
-             (ball_y + bsize/2) >= (bat_y - bat_h) AND
-             (ball_y - bsize/2) <= (bat_y + bat_h) THEN
+        IF (ball_x + ball_w/2) >= (bat_x - bat_w) AND
+         (ball_x - ball_w/2) <= (bat_x + bat_w) AND
+             (ball_y + ball_h/2) >= (bat_y - bat_h) AND
+             (ball_y - ball_h/2) <= (bat_y + bat_h) THEN
                 ball_y_motion <= (NOT ball_speed) + 1; -- set vspeed to (- ball_speed) pixels
         END IF;
         -- compute next ball vertical position
@@ -103,7 +115,7 @@ BEGIN
         -- when ball_y is close to zero and ball_y_motion is negative
         temp := ('0' & ball_y) + (ball_y_motion(10) & ball_y_motion);
         IF game_on = '0' THEN
-            ball_y <= CONV_STD_LOGIC_VECTOR(440, 11);
+            ball_y <= bat_y;--CONV_STD_LOGIC_VECTOR(440, 11);
         ELSIF temp(11) = '1' THEN
             ball_y <= (OTHERS => '0');
         ELSE ball_y <= temp(10 DOWNTO 0); -- 9 downto 0
@@ -112,9 +124,13 @@ BEGIN
         -- variable temp adds one more bit to calculation to fix unsigned underflow problems
         -- when ball_x is close to zero and ball_x_motion is negative
         temp := ('0' & ball_x) + (ball_x_motion(10) & ball_x_motion);
-        IF temp(11) = '1' THEN
-            ball_x <= (OTHERS => '0');
+        IF laser_on = '0' THEN
+            ball_x <= bat_x;
         ELSE ball_x <= temp(10 DOWNTO 0);
         END IF;
     END PROCESS;
+    
+--    laser_shootshoot : process
+    
+--    end process;
 END Behavioral;

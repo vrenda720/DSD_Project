@@ -12,8 +12,9 @@ ENTITY pong IS
         VGA_hsync : OUT STD_LOGIC;
         VGA_vsync : OUT STD_LOGIC;
         btnl : IN STD_LOGIC;
+        btnu : IN STD_LOGIC;
         btnr : IN STD_LOGIC;
-        btn0 : IN STD_LOGIC;
+        btnc : IN STD_LOGIC;
         SEG7_anode : OUT STD_LOGIC_VECTOR (7 DOWNTO 0); -- anodes of four 7-seg displays
         SEG7_seg : OUT STD_LOGIC_VECTOR (6 DOWNTO 0)
     ); 
@@ -36,6 +37,7 @@ ARCHITECTURE Behavioral OF pong IS
             pixel_col : IN STD_LOGIC_VECTOR(10 DOWNTO 0);
             bat_x : IN STD_LOGIC_VECTOR (10 DOWNTO 0);
             serve : IN STD_LOGIC;
+            shoot : IN STD_LOGIC;
             red : OUT STD_LOGIC;
             green : OUT STD_LOGIC;
             blue : OUT STD_LOGIC
@@ -90,7 +92,8 @@ BEGIN
         pixel_row => S_pixel_row, 
         pixel_col => S_pixel_col, 
         bat_x => batpos, 
-        serve => btn0, 
+        serve => btnu,
+        shoot => btnc,
         red => S_red, 
         green => S_green, 
         blue => S_blue
