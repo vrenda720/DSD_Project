@@ -70,6 +70,19 @@ BEGIN
             bat_on <= '0';
         END IF;
     END PROCESS;
+    balldraw : PROCESS (ball_x, ball_y, pixel_row, pixel_col) IS
+    BEGIN
+        IF ((pixel_col >= ball_x - ball_w) OR (ball_x <= ball_w)) AND
+         pixel_col <= ball_x + ball_w AND
+             pixel_row >= ball_y - ball_h AND
+             pixel_row <= ball_y + ball_h THEN
+             if game_on = '1' then
+                ball_on <= laser_on;
+             end if;
+        ELSE
+             ball_on <= '0';
+        end if;
+    END PROCESS;
     -- process to move ball once every frame (i.e., once every vsync pulse)
     mball : PROCESS
         VARIABLE temp : STD_LOGIC_VECTOR (11 DOWNTO 0);
@@ -101,10 +114,6 @@ BEGIN
             ball_x <= bat_x;
         END IF;
     END PROCESS;
-    
---    laser_shootshoot : process
-    
---    end process;
 
 aliendraw: PROCESS (pixel_row, pixel_col,alien1_y,alien2_y, alien3_y, alien4_y,alien5_y,alien6_y,alien7_y,alien8_y ) IS
     BEGIN
@@ -201,9 +210,9 @@ aliendraw: PROCESS (pixel_row, pixel_col,alien1_y,alien2_y, alien3_y, alien4_y,a
 
 laser_shootshoot : process(shoot, ball_y)
 begin
-    if shoot = '1' then
+    if shoot = '1' AND game_on = '1' then
         laser_on <= '1';
-    elsif ball_y <= ball_h THEN -- bounce off top wall
+    elsif ball_y <= ball_h THEN -- dissapear at top wall
         laser_on <= '0';
     end if;
 end process;
