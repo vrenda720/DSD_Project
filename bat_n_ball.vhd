@@ -22,10 +22,10 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     SIGNAL alien0_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(50, 11); -- Original alien's starting horizontal position
     SIGNAL alien1_x, alien2_x, alien3_x, alien4_x, alien5_x, alien6_x, alien7_x, alien8_x, alien9_x, alien10_x, alien11_x, alien12_x, alien13_x, alien14_x, alien15_x, alien16_x, alien17_x, alien18_x, alien19_x, alien20_x, alien21_x, alien22_x : STD_LOGIC_VECTOR(10 DOWNTO 0); -- Other aliens (horizontal)
     SIGNAL alien1_y, alien2_y, alien3_y, alien4_y, alien5_y, alien6_y, alien7_y, alien8_y, alien9_y, alien10_y, alien11_y, alien12_y, alien13_y, alien14_y, alien15_y, alien16_y, alien17_y, alien18_y, alien19_y, alien20_y, alien21_y, alien22_y : STD_LOGIC_VECTOR(10 DOWNTO 0); -- Other aliens (horizontal)
-    SIGNAL alien_on_screen: STD_LOGIC_VECTOR (22 DOWNTO 0) := (OTHERS => '1'); -- Shut off referencing bit when alien is hit
+    SIGNAL alien_on_screen: STD_LOGIC_VECTOR (22 DOWNTO 0) := (OTHERS => '0'); -- Shut off referencing bit when alien is hit
     SIGNAL aliensize1 : INTEGER := 12; -- Radius of Upper UFO
     SIGNAL aliensize2 : INTEGER := 24; -- Radius of Lower UFO
-    SIGNAL alien_on: STD_LOGIC_VECTOR (22 DOWNTO 0) := (OTHERS => '1'); -- Only turn on alien if referencing bit is '1'
+    SIGNAL alien_on: STD_LOGIC_VECTOR (22 DOWNTO 0) := (OTHERS => '0'); -- Only turn on alien if referencing bit is '1'
     SIGNAL aliens_move : STD_LOGIC_VECTOR (5 DOWNTO 0):= "000000"; -- Alien movement clock
     CONSTANT laser_w : INTEGER := 2; -- laser width in pixels
     CONSTANT laser_h : INTEGER := 10; -- laser height in pixels
@@ -33,11 +33,11 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     CONSTANT laser_speed : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR (6, 11); -- distance laser moves each frame
     SIGNAL laser_on : STD_LOGIC; -- indicates whether laser is at current pixel position
     SIGNAL ship_on : STD_LOGIC; -- indicates whether ship is over current pixel position
-    SIGNAL game_on : STD_LOGIC := '1'; -- indicates whether laser is in play
+    SIGNAL game_on : STD_LOGIC := '0'; -- indicates whether laser is in play
     SIGNAL laser_x : STD_LOGIC_VECTOR (10 DOWNTO 0); -- current laser position (Horizontal)
     SIGNAL laser_y : STD_LOGIC_VECTOR (10 DOWNTO 0); -- current laser position (Vertical)
     CONSTANT ship_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(575, 11); -- ship vertical position
-    SIGNAL laser_y_motion : STD_LOGIC_VECTOR (10 DOWNTO 0) := laser_speed; -- Do we need this?
+    SIGNAL laser_y_motion : STD_LOGIC_VECTOR (10 DOWNTO 0) := NOT (laser_speed) + 1; -- Do we need this?
     SIGNAL laser_on2 : STD_LOGIC := '0'; -- Controls when laser is triggered
 BEGIN
     -- Set Alien x Values
@@ -80,7 +80,8 @@ BEGIN
         WAIT UNTIL rising_edge(v_sync);
         IF start = '1' AND game_on = '0' THEN
             game_on <= '1';
-            laser_y_motion <= (NOT laser_speed) + 1; -- set vspeed to (- laser_speed) pixels
+            alien_on_screen <= (OTHERS => '1');
+            -- laser_y_motion <= (NOT laser_speed) + 1; -- set vspeed to (- laser_speed) pixels
         END IF;
         -- compute next laser vertical position
         -- variable temp adds one more bit to calculation to fix unsigned underflow problems
