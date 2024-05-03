@@ -12,6 +12,8 @@
 
 ...
 
+![Real Game GIF](https://codeheir.com/wp-content/uploads/2019/03/done.gif)
+
 ## Module Overview
 
 * The **_bat_n_ball_** module draws the bat and ball on the screen and also causes the ball to bounce (by reversing its speed) when it collides with the bat or one of the walls.
