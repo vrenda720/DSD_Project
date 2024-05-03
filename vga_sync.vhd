@@ -53,7 +53,7 @@ BEGIN
 		END IF;
 
 		IF (v_cnt >= V + V_FP + V_SYNC + V_BP - 1) AND (h_cnt = H + FREQ - 1) THEN
-			v_cnt <= (others => '0');
+			v_cnt <= (OTHERS => '0');
 		ELSIF (h_cnt = H + FREQ - 1) THEN
 			v_cnt <= v_cnt + 1;
 		END IF;
@@ -71,14 +71,14 @@ BEGIN
 		pixel_col <= h_cnt;
 		pixel_row <= v_cnt;
 		-- Register video to clock edge and suppress video during blanking and sync periods
-        if video_on = '1' then
+        IF video_on = '1' THEN
           red_out <= red_in;
           green_out <= green_in;
           blue_out <= blue_in;
-        else
+        ELSE
           red_out <= "0000";
           green_out <= "0000";
           blue_out <= "0000";
-        end if;
+        END IF;
 	END PROCESS;
 END Behavioral;

@@ -26,16 +26,16 @@ ARCHITECTURE Behavioral OF pong IS
     SIGNAL S_red, S_green, S_blue : STD_LOGIC; --_VECTOR (3 DOWNTO 0);
     SIGNAL S_vsync : STD_LOGIC;
     SIGNAL S_pixel_row, S_pixel_col : STD_LOGIC_VECTOR (10 DOWNTO 0);
-    SIGNAL batpos : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(575,11); -- 9 downto 0
+    SIGNAL shippos : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(400,11); -- 9 downto 0
     SIGNAL count : STD_LOGIC_VECTOR (20 DOWNTO 0);
     SIGNAL display : std_logic_vector (15 DOWNTO 0); -- value to be displayed
     SIGNAL led_mpx : STD_LOGIC_VECTOR (2 DOWNTO 0); -- 7-seg multiplexing clock
-    COMPONENT bat_n_ball IS
+    COMPONENT ship_n_laser IS
         PORT (
             v_sync : IN STD_LOGIC;
             pixel_row : IN STD_LOGIC_VECTOR(10 DOWNTO 0);
             pixel_col : IN STD_LOGIC_VECTOR(10 DOWNTO 0);
-            bat_x : IN STD_LOGIC_VECTOR (10 DOWNTO 0);
+            ship_x : IN STD_LOGIC_VECTOR (10 DOWNTO 0);
             start : IN STD_LOGIC;
             shoot : IN STD_LOGIC;
             red : OUT STD_LOGIC;
@@ -76,22 +76,22 @@ ARCHITECTURE Behavioral OF pong IS
 BEGIN
     pos : PROCESS (clk_in) is
     BEGIN
-        if rising_edge(clk_in) then
+        IF rising_edge(clk_in) then
             count <= count + 1;
-            IF (btnl = '1' and count = 0 and batpos > 0) THEN
-                batpos <= batpos - 10;
-            ELSIF (btnr = '1' and count = 0 and batpos < 800) THEN
-                batpos <= batpos + 10;
+            IF (btnl = '1' and count = 0 and shippos > 0) THEN
+                shippos <= shippos - 10;
+            ELSIF (btnr = '1' and count = 0 and shippos < 800) THEN
+                shippos <= shippos + 10;
             END IF;
-        end if;
+        END IF;
     END PROCESS;
     led_mpx <= count(19 DOWNTO 17); -- 7-seg multiplexing clock    
-    add_bb : bat_n_ball
-    PORT MAP(--instantiate bat and ball component
+    add_sl : ship_n_laser
+    PORT MAP(--instantiate ship and laser component
         v_sync => S_vsync, 
         pixel_row => S_pixel_row, 
         pixel_col => S_pixel_col, 
-        bat_x => batpos, 
+        ship_x => shippos, 
         start => btnu,
         shoot => btnc,
         red => S_red, 
@@ -116,7 +116,7 @@ BEGIN
     VGA_vsync <= S_vsync; --connect output vsync
         
     clk_wiz_0_inst : clk_wiz_0
-    port map (
+    PORT MAP (
       clk_in1 => clk_in,
       clk_out1 => pxl_clk
     );
