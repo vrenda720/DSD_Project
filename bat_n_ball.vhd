@@ -5,46 +5,40 @@ USE IEEE.STD_LOGIC_UNSIGNED.ALL;
 
 ENTITY ship_n_laser IS
     PORT (
-        v_sync : IN STD_LOGIC;
+        v_sync : IN STD_LOGIC; -- vga "clock"
         pixel_row : IN STD_LOGIC_VECTOR(10 DOWNTO 0);
         pixel_col : IN STD_LOGIC_VECTOR(10 DOWNTO 0);
-        ship_x : IN STD_LOGIC_VECTOR (10 DOWNTO 0); -- current ship x position
-        start : IN STD_LOGIC; -- initiates serve
-        shoot : IN STD_LOGIC;
-        red : OUT STD_LOGIC;
-        green : OUT STD_LOGIC;
-        blue : OUT STD_LOGIC
+        ship_x : IN STD_LOGIC_VECTOR (10 DOWNTO 0); -- Ship x position
+        start : IN STD_LOGIC; -- Starts/Resets Game
+        shoot : IN STD_LOGIC; -- Shoots Laser
+        red : OUT STD_LOGIC; -- VGA Red
+        green : OUT STD_LOGIC; -- VGA Green
+        blue : OUT STD_LOGIC -- VGA Blue
     );
 END ship_n_laser;
 
 ARCHITECTURE Behavioral OF ship_n_laser IS
-
-    SIGNAL alien0_x : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(50, 11);
-    SIGNAL alien1_x, alien2_x, alien3_x, alien4_x, alien5_x, alien6_x, alien7_x, alien8_x, alien9_x, alien10_x, alien11_x, alien12_x, alien13_x, alien14_x, alien15_x, alien16_x, alien17_x, alien18_x, alien19_x, alien20_x, alien21_x, alien22_x, alien23_x : STD_LOGIC_VECTOR(10 DOWNTO 0);
-    SIGNAL alien0_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(50, 11);
-    SIGNAL alien1_y, alien2_y, alien3_y, alien4_y, alien5_y, alien6_y, alien7_y, alien8_y, alien9_y, alien10_y, alien11_y, alien12_y, alien13_y, alien14_y, alien15_y, alien16_y, alien17_y, alien18_y, alien19_y, alien20_y, alien21_y, alien22_y, alien23_y: STD_LOGIC_VECTOR(10 DOWNTO 0);
-    SIGNAL alien_on_screen: STD_LOGIC_VECTOR (22 DOWNTO 0) := (OTHERS => '1');
-    SIGNAL aliensize1 : INTEGER := 12;
-    SIGNAL aliensize2 : INTEGER := 24;
-    SIGNAL alien_on: STD_LOGIC_VECTOR (22 DOWNTO 0) := (OTHERS => '1');
-    SIGNAL aliens_move : STD_LOGIC_VECTOR (5 DOWNTO 0):= "000000";
-    
-    CONSTANT laser_w : INTEGER := 2; -- laser size in pixels
-    CONSTANT laser_h : INTEGER := 10; -- laser size in pixels
-    -- CONSTANT ship_w : INTEGER := 20; -- ship width in pixels
+    SIGNAL alien0_x : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(50, 11); -- Original alien's starting horizontal position
+    SIGNAL alien0_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(50, 11); -- Original alien's starting horizontal position
+    SIGNAL alien1_x, alien2_x, alien3_x, alien4_x, alien5_x, alien6_x, alien7_x, alien8_x, alien9_x, alien10_x, alien11_x, alien12_x, alien13_x, alien14_x, alien15_x, alien16_x, alien17_x, alien18_x, alien19_x, alien20_x, alien21_x, alien22_x : STD_LOGIC_VECTOR(10 DOWNTO 0); -- Other aliens (horizontal)
+    SIGNAL alien1_y, alien2_y, alien3_y, alien4_y, alien5_y, alien6_y, alien7_y, alien8_y, alien9_y, alien10_y, alien11_y, alien12_y, alien13_y, alien14_y, alien15_y, alien16_y, alien17_y, alien18_y, alien19_y, alien20_y, alien21_y, alien22_y : STD_LOGIC_VECTOR(10 DOWNTO 0); -- Other aliens (horizontal)
+    SIGNAL alien_on_screen: STD_LOGIC_VECTOR (22 DOWNTO 0) := (OTHERS => '1'); -- Shut off referencing bit when alien is hit
+    SIGNAL aliensize1 : INTEGER := 12; -- Radius of Upper UFO
+    SIGNAL aliensize2 : INTEGER := 24; -- Radius of Lower UFO
+    SIGNAL alien_on: STD_LOGIC_VECTOR (22 DOWNTO 0) := (OTHERS => '1'); -- Only turn on alien if referencing bit is '1'
+    SIGNAL aliens_move : STD_LOGIC_VECTOR (5 DOWNTO 0):= "000000"; -- Alien movement clock
+    CONSTANT laser_w : INTEGER := 2; -- laser width in pixels
+    CONSTANT laser_h : INTEGER := 10; -- laser height in pixels
     CONSTANT ship_size : INTEGER := 40; -- ship height in pixels
-    -- distance laser moves each frame
-    CONSTANT laser_speed : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR (6, 11);
+    CONSTANT laser_speed : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR (6, 11); -- distance laser moves each frame
     SIGNAL laser_on : STD_LOGIC; -- indicates whether laser is at current pixel position
-    SIGNAL ship_on : STD_LOGIC; -- indicates whether ship at over current pixel position
+    SIGNAL ship_on : STD_LOGIC; -- indicates whether ship is over current pixel position
     SIGNAL game_on : STD_LOGIC := '1'; -- indicates whether laser is in play
-    -- current laser position - intitialized to center of screen
-    SIGNAL laser_x : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(400, 11);
-    SIGNAL laser_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(300, 11);
-    -- ship vertical position
-    CONSTANT ship_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(575, 11);
-    SIGNAL laser_y_motion : STD_LOGIC_VECTOR (10 DOWNTO 0) := laser_speed;
-    SIGNAL laser_on2 : STD_LOGIC := '0';
+    SIGNAL laser_x : STD_LOGIC_VECTOR (10 DOWNTO 0); -- current laser position (Horizontal)
+    SIGNAL laser_y : STD_LOGIC_VECTOR (10 DOWNTO 0); -- current laser position (Vertical)
+    CONSTANT ship_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(575, 11); -- ship vertical position
+    SIGNAL laser_y_motion : STD_LOGIC_VECTOR (10 DOWNTO 0) := laser_speed; -- Do we need this?
+    SIGNAL laser_on2 : STD_LOGIC := '0'; -- Controls when laser is triggered
 BEGIN
     -- Set Alien x Values
     alien1_x <= alien0_x + 100; alien2_x <= alien0_x + 200; alien3_x <= alien0_x + 300; alien4_x <= alien0_x + 400; alien5_x <= alien0_x + 500; alien6_x <= alien0_x + 600; alien7_x <= alien0_x + 700; alien8_x <= alien0_x; alien9_x <= alien0_x + 100; alien10_x <= alien0_x + 200; alien11_x <= alien0_x + 300; alien12_x <= alien0_x + 400; alien13_x <= alien0_x + 500; alien14_x <= alien0_x + 600; alien15_x <= alien0_x + 700; alien16_x <= alien0_x + 50; alien17_x <= alien0_x + 150; alien18_x <= alien0_x + 250; alien19_x <= alien0_x + 350; alien20_x <= alien0_x + 450; alien21_x <= alien0_x + 550; alien22_x <= alien0_x + 650;  alien1_y <= alien0_y;
@@ -69,7 +63,7 @@ BEGIN
     draw_laser : PROCESS (laser_x, laser_y, pixel_row, pixel_col) IS
     BEGIN
         IF ((pixel_col >= laser_x - laser_w) OR (laser_x <= laser_w)) AND
-         pixel_col <= laser_x + laser_w AND
+             pixel_col <= laser_x + laser_w AND
              pixel_row >= laser_y - laser_h AND
              pixel_row <= laser_y + laser_h THEN
              IF game_on = '1' THEN
@@ -84,7 +78,7 @@ BEGIN
         VARIABLE temp : STD_LOGIC_VECTOR (11 DOWNTO 0);
     BEGIN
         WAIT UNTIL rising_edge(v_sync);
-        IF start = '1' AND game_on = '0' THEN -- test for new serve
+        IF start = '1' AND game_on = '0' THEN
             game_on <= '1';
             laser_y_motion <= (NOT laser_speed) + 1; -- set vspeed to (- laser_speed) pixels
         END IF;
