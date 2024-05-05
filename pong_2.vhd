@@ -40,7 +40,7 @@ ARCHITECTURE Behavioral OF space_invaders IS
             start : IN STD_LOGIC; -- Starts Game
             shoot : IN STD_LOGIC; -- Shoots Laser
             quit : IN STD_LOGIC; -- Quits Game
-            score : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
+            score : OUT STD_LOGIC_VECTOR(15 DOWNTO 0); -- Sends score to leddec
             red : OUT STD_LOGIC; -- VGA Red
             green : OUT STD_LOGIC; -- VGA Green
             blue : OUT STD_LOGIC -- VGA Blue

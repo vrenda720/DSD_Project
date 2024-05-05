@@ -12,7 +12,7 @@ ENTITY ship_n_laser IS
         start : IN STD_LOGIC; -- Starts Game
         shoot : IN STD_LOGIC; -- Shoots Laser
         quit : IN STD_LOGIC; -- Quits Game
-        score : OUT STD_LOGIC_VECTOR (15 DOWNTO 0);
+        score : OUT STD_LOGIC_VECTOR (15 DOWNTO 0); -- Sends score to leddec
         red : OUT STD_LOGIC; -- VGA Red
         green : OUT STD_LOGIC; -- VGA Green
         blue : OUT STD_LOGIC -- VGA Blue
@@ -20,11 +20,11 @@ ENTITY ship_n_laser IS
 END ship_n_laser;
 
 ARCHITECTURE Behavioral OF ship_n_laser IS
-    TYPE INT_ARRAY IS ARRAY (0 TO 22) OF INTEGER;
+    TYPE INT_ARRAY IS ARRAY (0 TO 22) OF INTEGER; -- Type definition
     SIGNAL alien0_x : INTEGER := 50; -- Original alien's starting horizontal position
     SIGNAL alien0_y : INTEGER := 50; -- Original alien's starting horizontal position
-    SIGNAL alien_x : INT_ARRAY;
-    SIGNAL alien_y : INT_ARRAY;
+    SIGNAL alien_x : INT_ARRAY; -- Array of alien x positions
+    SIGNAL alien_y : INT_ARRAY; -- Array of alien y positions
     SIGNAL alien_on_screen: STD_LOGIC_VECTOR (22 DOWNTO 0) := (OTHERS => '0'); -- Shut off referencing bit when alien is hit
     SIGNAL aliensize1 : INTEGER := 12; -- Radius of Upper UFO
     SIGNAL aliensize2 : INTEGER := 24; -- Radius of Lower UFO
@@ -43,9 +43,10 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     SIGNAL laser_y_motion : STD_LOGIC_VECTOR (10 DOWNTO 0) := NOT (laser_speed) + 1; -- Do we need this?
     SIGNAL laser_shot : STD_LOGIC := '0'; -- Controls when laser is triggered
     SIGNAL dir : STD_LOGIC := '0'; -- Alien movement direction (0 for Right/1 for Left)
-    SIGNAL win, lose : STD_LOGIC := '0';
+    SIGNAL win, lose : STD_LOGIC := '0'; -- Set to 1 when game is won or lost
     SIGNAL win_on, lose_on : STD_LOGIC;
-    SIGNAL score_num : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL score_num : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0'); -- Keep score
+    SIGNAL movespeed : INTEGER := 4; -- Clock speed of alien movement
 BEGIN
     -- Set Score
     score <= score_num;
@@ -109,9 +110,7 @@ BEGIN
         IF (win = '1' OR lose = '1' OR quit = '1') AND game_on = '1' THEN
             game_on <= '0';
         END IF;
-        -- compute next laser vertical position
-        -- variable temp adds one more bit to calculation to fix unsigned underflow problems
-        -- when laser_y is close to zero AND laser_y_motion is negative
+        -- Compute next laser vertical position. Variable temp adds one more bit to calculation to fix unsigned underflow problems. When laser_y is close to zero AND laser_y_motion is negative
         temp := ('0' & laser_y) + (laser_y_motion(10) & laser_y_motion);
         IF game_on = '0' OR laser_shot = '0' THEN
             laser_y <= (ship_y - ship_size) - 50;
@@ -136,10 +135,10 @@ BEGIN
         WAIT UNTIL rising_edge(v_sync);
         IF aliens_move = 0 AND game_on = '1' THEN
             IF dir = '0' THEN alien0_x <= alien0_x + 5;
-            IF alien0_x = CONV_STD_LOGIC_VECTOR(70,11) THEN alien0_y <= alien0_y + 25; dir <= '1';
+            IF alien0_x = 70 THEN alien0_y <= alien0_y + 25; dir <= '1';
             END IF;
             ELSIF dir = '1' THEN alien0_x <= alien0_x - 5;
-            IF alien0_x = CONV_STD_LOGIC_VECTOR(30,11) THEN alien0_y <= alien0_y + 25; dir <= '0';
+            IF alien0_x = 30 THEN alien0_y <= alien0_y + 25; dir <= '0';
             END IF;
             END IF;
         END IF;
@@ -151,7 +150,7 @@ BEGIN
         IF game_on = '0' THEN
             alien0_x <= 50;
             alien0_y <= 50;
-        ELSE aliens_move <= aliens_move + 4;
+        ELSE aliens_move <= aliens_move + movespeed;
         END IF;
 
     END PROCESS;
@@ -161,7 +160,9 @@ BEGIN
             WAIT UNTIL rising_edge(v_sync);
             IF start = '1' AND game_on = '0' THEN
                 alien_on_screen <= (OTHERS => '1');
-                IF win = '1' THEN win <= '0';
+                IF win = '1' THEN
+                    win <= '0';
+                    -- movespeed <= movespeed + 4;
                 ELSE score_num <= (OTHERS => '0');
                 END IF;
             END IF;
@@ -173,7 +174,7 @@ BEGIN
             END IF;
             
             FOR i IN 0 TO 22 LOOP
-                IF alien_on_screen(i) = '1' AND (laser_x <= alien_x(i) + 24) AND (laser_x >= alien_x(i) - 24) AND (laser_y <= alien_y(i) + aliensize2) AND (laser_y >= alien_y(i) - aliensize1) THEN
+                IF alien_on_screen(i) = '1' AND (laser_x <= alien_x(i) + aliensize2) AND (laser_x >= alien_x(i) - aliensize2) AND (laser_y <= alien_y(i) + aliensize2) AND (laser_y >= alien_y(i) - aliensize1) THEN
                 alien_on_screen(i) <= '0';
                 laser_shot <= '0';
                 score_num <= score_num + 16;
