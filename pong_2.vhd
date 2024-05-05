@@ -38,6 +38,7 @@ ARCHITECTURE Behavioral OF space_invaders IS
             ship_x : IN STD_LOGIC_VECTOR (10 DOWNTO 0); -- Ship x position
             start : IN STD_LOGIC; -- Starts/Resets Game
             shoot : IN STD_LOGIC; -- Shoots Laser
+            score : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             red : OUT STD_LOGIC; -- VGA Red
             green : OUT STD_LOGIC; -- VGA Green
             blue : OUT STD_LOGIC -- VGA Blue
@@ -93,6 +94,7 @@ BEGIN
         ship_x => shippos, 
         start => btnu,
         shoot => btnc,
+        score => display,
         red => S_red, 
         green => S_green, 
         blue => S_blue
