@@ -165,6 +165,7 @@ BEGIN
                     win <= '0';
                     movespeed <= movespeed * 2;
                 ELSE score_num <= (OTHERS => '0');
+                     movespeed <= 4;
                 END IF;
             END IF;
             
@@ -175,7 +176,7 @@ BEGIN
             END IF;
             
             FOR i IN 0 TO 22 LOOP
-                IF alien_on_screen(i) = '1' AND (laser_x <= alien_x(i) + aliensize2) AND (laser_x >= alien_x(i) - aliensize2) AND (laser_y <= alien_y(i) + aliensize2) AND (laser_y >= alien_y(i) - aliensize1) AND laser_on = '1' THEN
+                IF alien_on_screen(i) = '1' AND (laser_x <= alien_x(i) + aliensize2) AND (laser_x >= alien_x(i) - aliensize2) AND (laser_y <= alien_y(i) + aliensize2) AND (laser_y >= alien_y(i) - aliensize1) AND laser_shot = '1' THEN
                 alien_on_screen(i) <= '0';
                 laser_shot <= '0';
                 score_num <= score_num + 16;
