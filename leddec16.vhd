@@ -16,7 +16,8 @@ BEGIN
 	data4 <= data(3 DOWNTO 0) WHEN dig = "000" ELSE -- digit 0
 	         data(7 DOWNTO 4) WHEN dig = "001" ELSE -- digit 1
 	         data(11 DOWNTO 8) WHEN dig = "010" ELSE -- digit 2
-	         data(15 DOWNTO 12); -- digit 3
+	         data(15 DOWNTO 12); -- WHEN dig = "011" ELSE -- digit 3
+			--  "0000"; -- Lives
 	-- Turn on segments corresponding to 4-bit data word
 	seg <= "0000001" WHEN data4 = "0000" ELSE -- 0
 	       "1001111" WHEN data4 = "0001" ELSE -- 1

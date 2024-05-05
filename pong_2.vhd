@@ -15,6 +15,7 @@ ENTITY space_invaders IS
         btnu : IN STD_LOGIC; -- Up Button
         btnr : IN STD_LOGIC; -- Right Button
         btnc : IN STD_LOGIC; -- Center Button
+        btnd : IN STD_LOGIC; -- Down Button
         SEG7_anode : OUT STD_LOGIC_VECTOR (7 DOWNTO 0); -- anodes of four 7-seg displays
         SEG7_seg : OUT STD_LOGIC_VECTOR (6 DOWNTO 0) -- seg of four 7-seg displays
     ); 
@@ -28,7 +29,7 @@ ARCHITECTURE Behavioral OF space_invaders IS
     SIGNAL S_pixel_row, S_pixel_col : STD_LOGIC_VECTOR (10 DOWNTO 0);
     SIGNAL shippos : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(400,11); -- Start ship at center
     SIGNAL count : STD_LOGIC_VECTOR (20 DOWNTO 0); -- 21-bit multiplexing counter
-    SIGNAL display : std_logic_vector (15 DOWNTO 0); -- Value to be displayed
+    SIGNAL display : STD_LOGIC_VECTOR (15 DOWNTO 0); -- Value to be displayed
     SIGNAL led_mpx : STD_LOGIC_VECTOR (2 DOWNTO 0); -- 7-seg multiplexing clock
     COMPONENT ship_n_laser IS
         PORT (
@@ -36,8 +37,9 @@ ARCHITECTURE Behavioral OF space_invaders IS
             pixel_row : IN STD_LOGIC_VECTOR(10 DOWNTO 0);
             pixel_col : IN STD_LOGIC_VECTOR(10 DOWNTO 0);
             ship_x : IN STD_LOGIC_VECTOR (10 DOWNTO 0); -- Ship x position
-            start : IN STD_LOGIC; -- Starts/Resets Game
+            start : IN STD_LOGIC; -- Starts Game
             shoot : IN STD_LOGIC; -- Shoots Laser
+            quit : IN STD_LOGIC; -- Quits Game
             score : OUT STD_LOGIC_VECTOR(15 DOWNTO 0);
             red : OUT STD_LOGIC; -- VGA Red
             green : OUT STD_LOGIC; -- VGA Green
@@ -94,6 +96,7 @@ BEGIN
         ship_x => shippos, 
         start => btnu,
         shoot => btnc,
+        quit => btnd,
         score => display,
         red => S_red, 
         green => S_green, 
