@@ -41,6 +41,7 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     SIGNAL laser_y : STD_LOGIC_VECTOR (10 DOWNTO 0); -- current laser position (Vertical)
     CONSTANT ship_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(550, 11); -- ship vertical position
     SIGNAL laser_y_motion : STD_LOGIC_VECTOR (10 DOWNTO 0) := NOT (laser_speed) + 1; -- Do we need this?
+    SIGNAL alien_laser_y_motion : STD_LOGIC_VECTOR (10 DOWNTO 0) := laser_speed;
     SIGNAL laser_shot : STD_LOGIC := '0'; -- Controls when laser is triggered
     SIGNAL dir : STD_LOGIC := '0'; -- Alien movement direction (0 for Right/1 for Left)
     SIGNAL win, lose : STD_LOGIC := '0'; -- Set to 1 when game is won or lost
@@ -48,7 +49,17 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     SIGNAL score_num : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0'); -- Keep score
     SIGNAL movespeed : INTEGER := 4; -- Clock speed of alien movement
     SIGNAL failline : STD_LOGIC; -- Blue line which game is lost when aliens cross. For testing purposes only.
-BEGIN
+    SIGNAL lives : STD_LOGIC_VECTOR (3 DOWNTO 0):= CONV_STD_LOGIC_VECTOR(3, 4);
+    SIGNAL alien_laser_x : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(0, 11);
+    SIGNAL alien_laser_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(900, 11);
+    SIGNAL enemy_laser_inbound : STD_LOGIC := '1';
+    SIGNAL alien_laser_on: STD_LOGIC;
+    --type INT_ARRAYy is array (natural range <>) of integer;
+    TYPE INT_ARRAYy IS ARRAY (0 TO 99) OF INTEGER;
+    signal laser_start_loc : INT_ARRAYy := (
+        2, 8, 14, 17, 3, 20, 5, 7, 1, 6, 10, 19, 13, 22, 9, 0, 12, 18, 15, 11, 4, 16, 0, 8, 3, 18, 20, 2, 17, 21, 5, 7, 6, 1, 11, 16, 15, 10, 9, 12, 13, 19, 22, 4, 14, 21, 18, 12, 0, 20, 3, 9, 5, 19, 8, 10, 7, 4, 1, 6, 17, 11, 21, 14, 16, 22, 15, 13, 2, 18, 20, 5, 0, 7, 1, 9, 10, 8, 14, 11, 3, 12, 6, 17, 21, 13, 19, 4, 2, 22, 16, 15, 18, 0, 5, 10, 14, 3, 19, 20
+    );
+    BEGIN
     -- Set Score
     score <= score_num;
     -- Set Alien x Values (Row 1)
@@ -64,7 +75,7 @@ BEGIN
     alien_y(16 TO 22) <= (OTHERS => alien0_y + 50); -- Row 2
 
     -- Set Colors
-    red <= laser_on OR lose_on;
+    red <= laser_on OR lose_on OR alien_laser_on;
     green <= win_on OR alien_on(0) OR alien_on(1) OR alien_on(2) OR alien_on(3) OR alien_on(4) OR alien_on(5) OR alien_on(6) OR alien_on(7) OR alien_on(8) OR alien_on(9) OR alien_on(10) OR alien_on(11) OR alien_on(12) OR alien_on(13) OR alien_on(14) OR alien_on(15) OR alien_on(16) OR alien_on(17) OR alien_on(18) OR alien_on(19) OR alien_on(20) OR alien_on(21) OR alien_on(22) OR ship_on;
     blue <= ship_on OR failline;
     
@@ -128,6 +139,47 @@ BEGIN
             FOR i IN 0 TO 22 LOOP
                 IF alien_on_screen(i) = '1' THEN IF (((CONV_INTEGER(pixel_row) - alien_y(i)) * (CONV_INTEGER(pixel_row) - alien_y(i))) + ((CONV_INTEGER(pixel_col) - alien_x(i)) * (CONV_INTEGER(pixel_col) - alien_x(i))) <= aliensize1*aliensize1) AND pixel_row <= CONV_STD_LOGIC_VECTOR(alien_y(i),11) AND game_on = '1' THEN alien_on(i) <= '1'; ELSIF (((CONV_INTEGER(pixel_row) - alien_y(i)) * (CONV_INTEGER(pixel_row) - alien_y(i))) + ((CONV_INTEGER(pixel_col) - alien_x(i)) * (CONV_INTEGER(pixel_col) - alien_x(i))) <= aliensize2*aliensize2) AND pixel_row >= CONV_STD_LOGIC_VECTOR(alien_y(i),11) AND game_on = '1' THEN alien_on(i) <= '1';  ELSE alien_on(i) <= '0'; END IF; END IF;
             END LOOP;
+    END PROCESS;
+
+    move_alien_laser: PROCESS is
+    VARIABLE temp1 : STD_LOGIC_VECTOR (11 DOWNTO 0);
+    VARIABLE laser_start : INTEGER := 0;
+        BEGIN
+        WAIT UNTIL rising_edge(v_sync);
+        IF (enemy_laser_inbound = '0' AND game_on = '1') THEN
+                if(alien_on_screen(laser_start_loc(laser_start)) = '1') then
+                enemy_laser_inbound <= '1';
+                alien_laser_x <= CONV_STD_LOGIC_VECTOR(alien_x(laser_start_loc(laser_start)), 11);
+                alien_laser_y <= CONV_STD_LOGIC_VECTOR(alien_y(laser_start_loc(laser_start)), 11);
+                end if;
+                laser_start := laser_start + 1;
+                if(laser_start = 100) Then
+                    laser_start := 0;
+                end IF;
+        END IF;
+        IF (enemy_laser_inbound = '1' AND game_on = '1') THEN
+        temp1 := ('0' & alien_laser_y) + (alien_laser_y_motion(10) & alien_laser_y_motion);
+            IF (alien_laser_x <= ship_x + aliensize2) AND (alien_laser_x >= ship_x - aliensize2) AND (alien_laser_y <= ship_y + aliensize2) AND (alien_laser_y >= ship_y - aliensize1) THEN
+                lives <= lives - 1;
+                enemy_laser_inbound <= '0';
+            ELSIF alien_laser_y + laser_h >= 600 THEN
+                enemy_laser_inbound <= '0';
+            ELSE alien_laser_y <= temp1(10 DOWNTO 0);
+            END IF;
+        END IF;    
+    END PROCESS;
+    
+    draw_alien_laser: PROCESS (alien_laser_x, alien_laser_y, pixel_row, pixel_col, game_on, enemy_laser_inbound) IS
+        BEGIN
+        --WAIT UNTIL rising_edge(v_sync);
+        IF ((pixel_col >= alien_laser_x - laser_w) OR (alien_laser_x <= laser_w)) AND
+             pixel_col <= alien_laser_x + laser_w AND
+             pixel_row >= alien_laser_y - laser_h AND
+             pixel_row <= alien_laser_y + laser_h AND game_on = '1' THEN
+                alien_laser_on <= enemy_laser_inbound;
+        ELSE
+            alien_laser_on <= '0';
+        END IF;
     END PROCESS;
 
     move_aliens : PROCESS
@@ -195,7 +247,7 @@ BEGIN
     BEGIN
         IF pixel_row >= 200 AND pixel_row <= 400 AND pixel_col >= 300 AND pixel_col <= 500 THEN
             IF win = '1' THEN win_on <= '1'; END IF;
-            IF lose = '1' OR quit = '1' THEN lose_on <= '1'; END IF;
+            IF lose = '1' OR quit = '1' THEN lose_on <= '1'; lives <= "0011"; END IF;
         ELSE win_on <= '0'; lose_on <= '0';
         END IF;
         IF pixel_row = 500 THEN failline <= '1'; ELSE failline <= '0'; END IF; -- For testing only
