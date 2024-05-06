@@ -2,6 +2,7 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.STD_LOGIC_ARITH.ALL;
 USE IEEE.STD_LOGIC_UNSIGNED.ALL;
+USE IEEE.STD_LOGIC_MISC.OR_REDUCE;
 
 ENTITY ship_n_laser IS
     PORT (
@@ -20,8 +21,8 @@ ENTITY ship_n_laser IS
 END ship_n_laser;
 
 ARCHITECTURE Behavioral OF ship_n_laser IS
-    TYPE INT_ARRAY IS ARRAY (0 TO 22) OF INTEGER; -- Type definition
-    TYPE ROW_ARRAY IS ARRAY (0 TO 15) OF STD_LOGIC_VECTOR (63 DOWNTO 0); -- Type definition
+    TYPE INT_ARRAY IS ARRAY (0 TO 22) OF INTEGER; -- Type definition for int array
+    TYPE ROW_ARRAY IS ARRAY (0 TO 15) OF STD_LOGIC_VECTOR (63 DOWNTO 0); -- Type definition for 2D vector array
     SIGNAL alien0_x : INTEGER := 50; -- Original alien's starting horizontal position
     SIGNAL alien0_y : INTEGER := 50; -- Original alien's starting horizontal position
     SIGNAL alien_x : INT_ARRAY; -- Array of alien x positions
@@ -29,7 +30,7 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     SIGNAL alien_on_screen: STD_LOGIC_VECTOR (22 DOWNTO 0) := (OTHERS => '0'); -- Shut off referencing bit when alien is hit
     SIGNAL aliensize1 : INTEGER := 12; -- Radius of Upper UFO
     SIGNAL aliensize2 : INTEGER := 24; -- Radius of Lower UFO
-    SIGNAL alien_on: STD_LOGIC_VECTOR (22 DOWNTO 0) := (OTHERS => '0'); -- Only turn on alien if referencing bit is '1'
+    SIGNAL alien_on : STD_LOGIC_VECTOR (22 DOWNTO 0) := (OTHERS => '0'); -- Only turn on alien if referencing bit is '1'
     SIGNAL aliens_move : STD_LOGIC_VECTOR (5 DOWNTO 0):= "000000"; -- Alien movement clock
     CONSTANT laser_w : INTEGER := 2; -- laser width in pixels
     CONSTANT laser_h : INTEGER := 10; -- laser height in pixels
@@ -44,7 +45,7 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     SIGNAL laser_y_motion : STD_LOGIC_VECTOR (10 DOWNTO 0) := NOT (laser_speed) + 1; -- Do we need this?
     SIGNAL laser_shot : STD_LOGIC := '0'; -- Controls when laser is triggered
     SIGNAL dir : STD_LOGIC := '0'; -- Alien movement direction (0 for Right/1 for Left)
-    SIGNAL win, lose : STD_LOGIC := '0'; -- Set to 1 when game is won or lost
+    SIGNAL win, lose, quit2 : STD_LOGIC := '0'; -- Set to 1 when game is won, lost, or quit
     SIGNAL win_on, lose_on : STD_LOGIC; -- Displays win/lose graphic when set to 1
     SIGNAL score_num : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0'); -- Keep score
     SIGNAL movespeed : INTEGER := 4; -- Clock speed of alien movement
@@ -98,7 +99,7 @@ BEGIN
 
     -- Set Colors
     red <= laser_on OR lose_on;
-    green <= win_on OR alien_on(0) OR alien_on(1) OR alien_on(2) OR alien_on(3) OR alien_on(4) OR alien_on(5) OR alien_on(6) OR alien_on(7) OR alien_on(8) OR alien_on(9) OR alien_on(10) OR alien_on(11) OR alien_on(12) OR alien_on(13) OR alien_on(14) OR alien_on(15) OR alien_on(16) OR alien_on(17) OR alien_on(18) OR alien_on(19) OR alien_on(20) OR alien_on(21) OR alien_on(22) OR ship_on;
+    green <= win_on OR ship_on OR (OR_REDUCE(alien_on));
     blue <= ship_on;
     
     draw_ship : PROCESS (ship_x, pixel_row, pixel_col) IS
@@ -139,9 +140,12 @@ BEGIN
         WAIT UNTIL rising_edge(v_sync);
         IF start = '1' AND game_on = '0' THEN
             game_on <= '1';
+            quit2 <= '0';
         END IF;
-        IF (win = '1' OR lose = '1' OR quit = '1') AND game_on = '1' THEN
+        IF (win = '1' OR lose = '1') AND game_on = '1' THEN
             game_on <= '0';
+        ELSIF quit = '1' AND game_on = '1' THEN
+            game_on <= '0'; quit2 <= '1';
         END IF;
         -- Compute next laser vertical position. Variable temp adds one more bit to calculation to fix unsigned underflow problems. When laser_y is close to zero AND laser_y_motion is negative
         temp := ('0' & laser_y) + (laser_y_motion(10) & laser_y_motion);
@@ -209,7 +213,7 @@ BEGIN
             
             IF shoot = '1' AND game_on = '1' THEN
                 laser_shot <= '1';
-            ELSIF laser_y <= laser_h THEN -- dissapear at top wall
+            ELSIF laser_y <= laser_h OR game_on = '0' THEN -- dissapear at top wall
                 laser_shot <= '0';
             END IF;
             
@@ -224,7 +228,7 @@ BEGIN
             IF alien_on_screen = 0 AND game_on = '1' THEN win <= '1'; END IF;
     END PROCESS;
 
-    text_draw : PROCESS (pixel_row, pixel_col, win_on)
+    text_draw : PROCESS (pixel_row, pixel_col, win_on, lose_on, win, lose, quit2, you_lose)
     BEGIN
         win_on <= '0';
         lose_on <= '0';
@@ -233,7 +237,7 @@ BEGIN
                 IF (pixel_col >= 400 - (32 * text_size) + text_size * i) AND (pixel_col < 400 - (32 * text_size) + text_size * (i + 1)) AND (pixel_row >= 300 - (8 * text_size) + text_size * j) AND (pixel_row < 300 - (8 * text_size) + text_size * (j + 1)) AND
                 you_win(j)(63 - i) = '1' AND win = '1' THEN win_on <= '1';
                 ELSIF (pixel_col >= 400 - (32 * text_size) + text_size * i) AND (pixel_col < 400 - (32 * text_size) + text_size * (i + 1)) AND (pixel_row >= 300 - (8 * text_size) + text_size * j) AND (pixel_row < 300 - (8 * text_size) + text_size * (j + 1)) AND
-                you_lose(j)(63 - i) = '1' AND (lose = '1' or quit = '1') THEN lose_on <= '1';
+                you_lose(j)(63 - i) = '1' AND (lose = '1' or quit2 = '1') THEN lose_on <= '1';
                 END IF;
             END LOOP;
         END LOOP;
