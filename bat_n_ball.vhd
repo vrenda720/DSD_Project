@@ -21,6 +21,7 @@ END ship_n_laser;
 
 ARCHITECTURE Behavioral OF ship_n_laser IS
     TYPE INT_ARRAY IS ARRAY (0 TO 22) OF INTEGER; -- Type definition
+    TYPE ROW_ARRAY IS ARRAY (0 TO 15) OF STD_LOGIC_VECTOR (63 DOWNTO 0); -- Type definition
     SIGNAL alien0_x : INTEGER := 50; -- Original alien's starting horizontal position
     SIGNAL alien0_y : INTEGER := 50; -- Original alien's starting horizontal position
     SIGNAL alien_x : INT_ARRAY; -- Array of alien x positions
@@ -47,7 +48,41 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     SIGNAL win_on, lose_on : STD_LOGIC; -- Displays win/lose graphic when set to 1
     SIGNAL score_num : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0'); -- Keep score
     SIGNAL movespeed : INTEGER := 4; -- Clock speed of alien movement
-    SIGNAL failline : STD_LOGIC; -- Blue line which game is lost when aliens cross. For testing purposes only.
+    -- SIGNAL letter_on : STD_LOGIC;
+    CONSTANT text_size : INTEGER := 5;
+    SIGNAL you_win : ROW_ARRAY := ("0000000000000000000000000000000000000000000000000000000000000000",
+                                   "0000000000000000000000000000000000000000000000000000000000000000",
+                                   "1100001100000000000000000000000011000011000110000000000000011000",
+                                   "1100001100000000000000000000000011000011000110000000000000111100",
+                                   "1100001100000000000000000000000011000011000000000000000000111100",
+                                   "0110011001111100110011000000000011000011001110001101110000111100",
+                                   "0011110011000110110011000000000011000011000110000110011000011000",
+                                   "0001100011000110110011000000000011011011000110000110011000011000",
+                                   "0001100011000110110011000000000011011011000110000110011000011000",
+                                   "0001100011000110110011000000000011111111000110000110011000000000",
+                                   "0001100011000110110011000000000001100110000110000110011000011000",
+                                   "0011110001111100011101100000000001100110001111000110011000011000",
+                                   "0000000000000000000000000000000000000000000000000000000000000000",
+                                   "0000000000000000000000000000000000000000000000000000000000000000",
+                                   "0000000000000000000000000000000000000000000000000000000000000000",
+                                   "0000000000000000000000000000000000000000000000000000000000000000");
+    SIGNAL you_lose : ROW_ARRAY := ("0000000000000000000000000000000000000000000000000000000000000000",
+                                    "0000000000000000000000000000000000000000000000000000000000000000",
+                                    "1100001100000000000000000000000011110000000000000000000000000000",
+                                    "1100001100000000000000000000000001100000000000000000000000000000",
+                                    "1100001100000000000000000000000001100000000000000000000000000000",
+                                    "0110011001111100110011000000000001100000011111000111110001111100",
+                                    "0011110011000110110011000000000001100000110001101100011011000110",
+                                    "0001100011000110110011000000000001100000110001100110000011111110",
+                                    "0001100011000110110011000000000001100000110001100011100011000000",
+                                    "0001100011000110110011000000000001100010110001100000110011000000",
+                                    "0001100011000110110011000000000001100110110001101100011011000110",
+                                    "0011110001111100011101100000000011111110011111000111110001111100",
+                                    "0000000000000000000000000000000000000000000000000000000000000000",
+                                    "0000000000000000000000000000000000000000000000000000000000000000",
+                                    "0000000000000000000000000000000000000000000000000000000000000000",
+                                    "0000000000000000000000000000000000000000000000000000000000000000");
+
 BEGIN
     -- Set Score
     score <= score_num;
@@ -66,7 +101,7 @@ BEGIN
     -- Set Colors
     red <= laser_on OR lose_on;
     green <= win_on OR alien_on(0) OR alien_on(1) OR alien_on(2) OR alien_on(3) OR alien_on(4) OR alien_on(5) OR alien_on(6) OR alien_on(7) OR alien_on(8) OR alien_on(9) OR alien_on(10) OR alien_on(11) OR alien_on(12) OR alien_on(13) OR alien_on(14) OR alien_on(15) OR alien_on(16) OR alien_on(17) OR alien_on(18) OR alien_on(19) OR alien_on(20) OR alien_on(21) OR alien_on(22) OR ship_on;
-    blue <= ship_on OR failline;
+    blue <= ship_on;
     
     draw_ship : PROCESS (ship_x, pixel_row, pixel_col) IS
     BEGIN
@@ -191,13 +226,32 @@ BEGIN
             IF alien_on_screen = 0 AND game_on = '1' THEN win <= '1'; END IF;
     END PROCESS;
 
-    winlose_draw : PROCESS (win, lose, quit, pixel_row, pixel_col, win_on, lose_on)
+    -- winlose_draw : PROCESS (win, lose, quit, pixel_row, pixel_col, win_on, lose_on)
+    -- BEGIN
+    --     IF pixel_row >= 200 AND pixel_row <= 400 AND pixel_col >= 300 AND pixel_col <= 500 THEN
+    --         IF win = '1' THEN win_on <= '1'; END IF;
+    --         IF lose = '1' OR quit = '1' THEN lose_on <= '1'; END IF;
+    --     ELSE win_on <= '0'; lose_on <= '0';
+    --     END IF;
+    --     IF pixel_row = 500 THEN failline <= '1'; ELSE failline <= '0'; END IF; -- For testing only
+    -- END PROCESS;
+
+    text_draw : PROCESS (pixel_row, pixel_col, win_on)-- 65x16
     BEGIN
-        IF pixel_row >= 200 AND pixel_row <= 400 AND pixel_col >= 300 AND pixel_col <= 500 THEN
-            IF win = '1' THEN win_on <= '1'; END IF;
-            IF lose = '1' OR quit = '1' THEN lose_on <= '1'; END IF;
-        ELSE win_on <= '0'; lose_on <= '0';
-        END IF;
-        IF pixel_row = 500 THEN failline <= '1'; ELSE failline <= '0'; END IF; -- For testing only
+        win_on <= '0';
+        lose_on <= '0';
+        FOR j IN 0 TO 15 LOOP
+            FOR i IN 0 TO 63 LOOP
+                IF (pixel_col >= 400 - (32 * text_size) + text_size * i) AND (pixel_col < 400 - (32 * text_size) + text_size * (i + 1)) AND
+                (pixel_row >= 300 - (8 * text_size) + text_size * j) AND (pixel_row < 300 - (8 * text_size) + text_size * (j + 1)) AND
+                you_win(j)(63 - i) = '1' AND win = '1' THEN
+                    win_on <= '1';
+                ELSIF (pixel_col >= 400 - (32 * text_size) + text_size * i) AND (pixel_col < 400 - (32 * text_size) + text_size * (i + 1)) AND
+                (pixel_row >= 300 - (8 * text_size) + text_size * j) AND (pixel_row < 300 - (8 * text_size) + text_size * (j + 1)) AND
+                you_lose(j)(63 - i) = '1' AND (lose = '1' or quit = '1') THEN
+                    lose_on <= '1';
+                END IF;
+            END LOOP;
+        END LOOP;
     END PROCESS;
 END Behavioral;
