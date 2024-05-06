@@ -39,14 +39,15 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     SIGNAL game_on : STD_LOGIC := '0'; -- indicates whether laser is in play
     SIGNAL laser_x : STD_LOGIC_VECTOR (10 DOWNTO 0); -- current laser position (Horizontal)
     SIGNAL laser_y : STD_LOGIC_VECTOR (10 DOWNTO 0); -- current laser position (Vertical)
-    CONSTANT ship_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(500, 11); -- ship vertical position
+    CONSTANT ship_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(550, 11); -- ship vertical position
     SIGNAL laser_y_motion : STD_LOGIC_VECTOR (10 DOWNTO 0) := NOT (laser_speed) + 1; -- Do we need this?
     SIGNAL laser_shot : STD_LOGIC := '0'; -- Controls when laser is triggered
     SIGNAL dir : STD_LOGIC := '0'; -- Alien movement direction (0 for Right/1 for Left)
     SIGNAL win, lose : STD_LOGIC := '0'; -- Set to 1 when game is won or lost
-    SIGNAL win_on, lose_on : STD_LOGIC;
+    SIGNAL win_on, lose_on : STD_LOGIC; -- Displays win/lose graphic when set to 1
     SIGNAL score_num : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0'); -- Keep score
     SIGNAL movespeed : INTEGER := 4; -- Clock speed of alien movement
+    SIGNAL failline : STD_LOGIC; -- Blue line which game is lost when aliens cross. For testing purposes only.
 BEGIN
     -- Set Score
     score <= score_num;
@@ -65,7 +66,7 @@ BEGIN
     -- Set Colors
     red <= laser_on OR lose_on;
     green <= win_on OR alien_on(0) OR alien_on(1) OR alien_on(2) OR alien_on(3) OR alien_on(4) OR alien_on(5) OR alien_on(6) OR alien_on(7) OR alien_on(8) OR alien_on(9) OR alien_on(10) OR alien_on(11) OR alien_on(12) OR alien_on(13) OR alien_on(14) OR alien_on(15) OR alien_on(16) OR alien_on(17) OR alien_on(18) OR alien_on(19) OR alien_on(20) OR alien_on(21) OR alien_on(22) OR ship_on;
-    blue <= ship_on;
+    blue <= ship_on OR failline;
     
     draw_ship : PROCESS (ship_x, pixel_row, pixel_col) IS
     BEGIN
@@ -105,7 +106,6 @@ BEGIN
         WAIT UNTIL rising_edge(v_sync);
         IF start = '1' AND game_on = '0' THEN
             game_on <= '1';
-            lose <= '0';
         END IF;
         IF (win = '1' OR lose = '1' OR quit = '1') AND game_on = '1' THEN
             game_on <= '0';
@@ -143,14 +143,19 @@ BEGIN
             END IF;
         END IF;
 
-        -- IF alien0_x <= CONV_STD_LOGIC_VECTOR(500,11) AND game_on = '1' THEN
-        --     lose <= '1';
-        -- END IF;
+        IF alien0_y + 100 + aliensize2 >= 500 AND game_on = '1' AND alien_on_screen(15 DOWNTO 8) /= 0 THEN
+            lose <= '1';
+        ELSIF alien0_y + 50 + aliensize2 >= 500 AND game_on = '1' AND alien_on_screen(22 DOWNTO 16) /= 0 THEN
+            lose <= '1';
+        ELSIF alien0_y + aliensize2 >= 500 AND game_on = '1' AND alien_on_screen(7 DOWNTO 0) /= 0 THEN
+            lose <= '1';
+        END IF;
 
         IF game_on = '0' THEN
             alien0_x <= 50;
             alien0_y <= 50;
             aliens_move <= "000000";
+            IF start = '1' THEN lose <= '0'; END IF;
         ELSE aliens_move <= aliens_move + movespeed;
         END IF;
 
@@ -186,11 +191,13 @@ BEGIN
             IF alien_on_screen = 0 AND game_on = '1' THEN win <= '1'; END IF;
     END PROCESS;
 
-    -- winlose_draw : PROCESS (win, lose)
-    -- BEGIN
-    --     IF ("Box in Center") THEN
-    --         IF win = '1' THEN win_on <= '1'' END IF;
-    --         IF lose = '1' THEN lose_on <= '1'; END IF;
-    --     END IF;
-    -- END PROCESS;
+    winlose_draw : PROCESS (win, lose, quit, pixel_row, pixel_col, win_on, lose_on)
+    BEGIN
+        IF pixel_row >= 200 AND pixel_row <= 400 AND pixel_col >= 300 AND pixel_col <= 500 THEN
+            IF win = '1' THEN win_on <= '1'; END IF;
+            IF lose = '1' OR quit = '1' THEN lose_on <= '1'; END IF;
+        ELSE win_on <= '0'; lose_on <= '0';
+        END IF;
+        IF pixel_row = 500 THEN failline <= '1'; ELSE failline <= '0'; END IF; -- For testing only
+    END PROCESS;
 END Behavioral;
