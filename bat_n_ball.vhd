@@ -48,8 +48,6 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     SIGNAL win_on, lose_on : STD_LOGIC; -- Displays win/lose graphic when set to 1
     SIGNAL score_num : STD_LOGIC_VECTOR(15 DOWNTO 0) := (OTHERS => '0'); -- Keep score
     SIGNAL movespeed : INTEGER := 4; -- Clock speed of alien movement
-    -- SIGNAL letter_on : STD_LOGIC;
-    CONSTANT text_size : INTEGER := 5;
     SIGNAL you_win : ROW_ARRAY := ("0000000000000000000000000000000000000000000000000000000000000000",
                                    "0000000000000000000000000000000000000000000000000000000000000000",
                                    "1100001100000000000000000000000011000011000110000000000000011000",
@@ -82,7 +80,7 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
                                     "0000000000000000000000000000000000000000000000000000000000000000",
                                     "0000000000000000000000000000000000000000000000000000000000000000",
                                     "0000000000000000000000000000000000000000000000000000000000000000");
-
+    CONSTANT text_size : INTEGER := 5; -- Size of the text
 BEGIN
     -- Set Score
     score <= score_num;
@@ -226,30 +224,16 @@ BEGIN
             IF alien_on_screen = 0 AND game_on = '1' THEN win <= '1'; END IF;
     END PROCESS;
 
-    -- winlose_draw : PROCESS (win, lose, quit, pixel_row, pixel_col, win_on, lose_on)
-    -- BEGIN
-    --     IF pixel_row >= 200 AND pixel_row <= 400 AND pixel_col >= 300 AND pixel_col <= 500 THEN
-    --         IF win = '1' THEN win_on <= '1'; END IF;
-    --         IF lose = '1' OR quit = '1' THEN lose_on <= '1'; END IF;
-    --     ELSE win_on <= '0'; lose_on <= '0';
-    --     END IF;
-    --     IF pixel_row = 500 THEN failline <= '1'; ELSE failline <= '0'; END IF; -- For testing only
-    -- END PROCESS;
-
-    text_draw : PROCESS (pixel_row, pixel_col, win_on)-- 65x16
+    text_draw : PROCESS (pixel_row, pixel_col, win_on)
     BEGIN
         win_on <= '0';
         lose_on <= '0';
         FOR j IN 0 TO 15 LOOP
             FOR i IN 0 TO 63 LOOP
-                IF (pixel_col >= 400 - (32 * text_size) + text_size * i) AND (pixel_col < 400 - (32 * text_size) + text_size * (i + 1)) AND
-                (pixel_row >= 300 - (8 * text_size) + text_size * j) AND (pixel_row < 300 - (8 * text_size) + text_size * (j + 1)) AND
-                you_win(j)(63 - i) = '1' AND win = '1' THEN
-                    win_on <= '1';
-                ELSIF (pixel_col >= 400 - (32 * text_size) + text_size * i) AND (pixel_col < 400 - (32 * text_size) + text_size * (i + 1)) AND
-                (pixel_row >= 300 - (8 * text_size) + text_size * j) AND (pixel_row < 300 - (8 * text_size) + text_size * (j + 1)) AND
-                you_lose(j)(63 - i) = '1' AND (lose = '1' or quit = '1') THEN
-                    lose_on <= '1';
+                IF (pixel_col >= 400 - (32 * text_size) + text_size * i) AND (pixel_col < 400 - (32 * text_size) + text_size * (i + 1)) AND (pixel_row >= 300 - (8 * text_size) + text_size * j) AND (pixel_row < 300 - (8 * text_size) + text_size * (j + 1)) AND
+                you_win(j)(63 - i) = '1' AND win = '1' THEN win_on <= '1';
+                ELSIF (pixel_col >= 400 - (32 * text_size) + text_size * i) AND (pixel_col < 400 - (32 * text_size) + text_size * (i + 1)) AND (pixel_row >= 300 - (8 * text_size) + text_size * j) AND (pixel_row < 300 - (8 * text_size) + text_size * (j + 1)) AND
+                you_lose(j)(63 - i) = '1' AND (lose = '1' or quit = '1') THEN lose_on <= '1';
                 END IF;
             END LOOP;
         END LOOP;
