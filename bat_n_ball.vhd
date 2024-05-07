@@ -54,6 +54,15 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     SIGNAL alien_laser_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(900, 11);
     SIGNAL enemy_laser_inbound : STD_LOGIC := '1';
     SIGNAL alien_laser_on: STD_LOGIC;
+    SIGNAL life1_on: std_logic := '1';
+    SIGNAL life2_on: std_logic := '1';
+    SIGNAL life3_on: std_logic := '1';
+    SIGNAL life_1_x : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(50, 11);
+    SIGNAL life_1_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(50, 11);
+    SIGNAL life_2_x : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(100, 11);
+    SIGNAL life_2_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(50, 11);
+    SIGNAL life_3_x : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(150, 11);
+    SIGNAL life_3_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(50, 11);
     --type INT_ARRAYy is array (natural range <>) of integer;
     TYPE INT_ARRAYy IS ARRAY (0 TO 99) OF INTEGER;
     signal laser_start_loc : INT_ARRAYy := (
@@ -76,8 +85,8 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
 
     -- Set Colors
     red <= laser_on OR lose_on OR alien_laser_on;
-    green <= win_on OR alien_on(0) OR alien_on(1) OR alien_on(2) OR alien_on(3) OR alien_on(4) OR alien_on(5) OR alien_on(6) OR alien_on(7) OR alien_on(8) OR alien_on(9) OR alien_on(10) OR alien_on(11) OR alien_on(12) OR alien_on(13) OR alien_on(14) OR alien_on(15) OR alien_on(16) OR alien_on(17) OR alien_on(18) OR alien_on(19) OR alien_on(20) OR alien_on(21) OR alien_on(22) OR ship_on;
-    blue <= ship_on OR failline;
+    green <= life3_on OR life2_on OR life1_on OR win_on OR alien_on(0) OR alien_on(1) OR alien_on(2) OR alien_on(3) OR alien_on(4) OR alien_on(5) OR alien_on(6) OR alien_on(7) OR alien_on(8) OR alien_on(9) OR alien_on(10) OR alien_on(11) OR alien_on(12) OR alien_on(13) OR alien_on(14) OR alien_on(15) OR alien_on(16) OR alien_on(17) OR alien_on(18) OR alien_on(19) OR alien_on(20) OR alien_on(21) OR alien_on(22) OR ship_on;
+    blue <= life3_on OR life2_on OR life1_on OR ship_on OR failline;
     
     draw_ship : PROCESS (ship_x, pixel_row, pixel_col) IS
     BEGIN
@@ -108,6 +117,34 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
                 laser_on <= laser_shot;
         ELSE
             laser_on <= '0';
+        END IF;
+    END PROCESS;
+    
+    draw_lives : PROCESS (laser_x, laser_y, pixel_row, pixel_col, game_on, laser_shot) IS
+    BEGIN
+        IF ((pixel_col >= life_1_x - 20) OR (life_1_x <= 20)) AND
+             pixel_col <= life_1_x + 20 AND
+             pixel_row >= life_1_y - 20 AND
+             pixel_row <= life_1_y + 20 AND game_on = '1' AND lives = "0011" THEN
+                life1_on <= '1';
+        ELSE
+                life1_on <= '0';
+        END IF;
+        IF ((pixel_col >= life_2_x - 20) OR (life_2_x <= 20)) AND
+             pixel_col <= life_2_x + 20 AND
+             pixel_row >= life_2_y - 20 AND
+             pixel_row <= life_2_y + 20 AND game_on = '1' AND (lives = "0011" OR lives = "0010") THEN
+                life2_on <= '1';
+        ELSE
+                life2_on <= '0';
+        END IF;
+        IF ((pixel_col >= life_3_x - 20) OR (life_3_x <= 20)) AND
+             pixel_col <= life_3_x + 20 AND
+             pixel_row >= life_3_y - 20 AND
+             pixel_row <= life_3_y + 20 AND game_on = '1' AND (lives = "0011" OR lives = "0010" OR lives = "0001") THEN
+                life3_on <= '1';
+        ELSE
+                life3_on <= '0';
         END IF;
     END PROCESS;
 
@@ -166,7 +203,11 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
                 enemy_laser_inbound <= '0';
             ELSE alien_laser_y <= temp1(10 DOWNTO 0);
             END IF;
-        END IF;    
+        END IF;  
+        
+        IF start = '1' AND game_on = '0' AND NOT(lives = "0010" OR lives = "0001") THEN
+            lives <= "0011";
+        END IF;  
     END PROCESS;
     
     draw_alien_laser: PROCESS (alien_laser_x, alien_laser_y, pixel_row, pixel_col, game_on, enemy_laser_inbound) IS
@@ -200,6 +241,8 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
         ELSIF alien0_y + 50 + aliensize2 >= 500 AND game_on = '1' AND alien_on_screen(22 DOWNTO 16) /= 0 THEN
             lose <= '1';
         ELSIF alien0_y + aliensize2 >= 500 AND game_on = '1' AND alien_on_screen(7 DOWNTO 0) /= 0 THEN
+            lose <= '1';
+        ELSIF lives = "0000" THEN
             lose <= '1';
         END IF;
 
@@ -247,7 +290,7 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     BEGIN
         IF pixel_row >= 200 AND pixel_row <= 400 AND pixel_col >= 300 AND pixel_col <= 500 THEN
             IF win = '1' THEN win_on <= '1'; END IF;
-            IF lose = '1' OR quit = '1' THEN lose_on <= '1'; lives <= "0011"; END IF;
+            IF lose = '1' OR quit = '1' THEN lose_on <= '1'; END IF;
         ELSE win_on <= '0'; lose_on <= '0';
         END IF;
         IF pixel_row = 500 THEN failline <= '1'; ELSE failline <= '0'; END IF; -- For testing only
