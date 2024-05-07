@@ -183,7 +183,9 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
             ELSE alien_laser_y <= temp1(10 DOWNTO 0);
             END IF;
         END IF;
-        IF start = '1' AND game_on = '0' AND NOT(lives = 2 OR lives = 3) THEN
+        IF start = '1' AND game_on = '0' AND NOT(lives = 2 OR lives = 1) THEN
+            lives <= 3;
+        ELSIF quit2 = '1' THEN
             lives <= 3;
         END IF;
     END PROCESS;
