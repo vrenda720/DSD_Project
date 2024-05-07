@@ -1,10 +1,7 @@
-<!-- # Tomorrow
-
-![image](battle.jpg) -->
 
 # Final Project: Space Invaders
 
-# **[Project Instructions](https://github.com/moshem1234/dsd/blob/CPE487-Spring2024/Projects/README.md)**
+> # **[Project Instructions](https://github.com/moshem1234/dsd/blob/CPE487-Spring2024/Projects/README.md)**
 
 ![Space Invaders](https://upload.wikimedia.org/wikipedia/en/0/0f/Space_Invaders_flyer%2C_1978.jpg)
 
@@ -19,15 +16,13 @@
 
 ## Module Overview
 
-* The **_[bat_n_ball](/bat_n_ball.vhd)_** module draws the bat and ball on the screen and also causes the ball to bounce (by reversing its speed) when it collides with the bat or one of the walls.
-  * It also uses a variable game_on to indicate whether the ball is currently in play.
-  * When game_on = ‘1’, the ball is visible and bounces off the bat and/or the top, left and right walls.
-  * If the ball hits the bottom wall, game_on is set to ‘0’. When game_on = ‘0’, the ball is not visible and waits to be served.
-  * When the serve input goes high, game_on is set to ‘1’ and the ball becomes visible again.
+* The **_[ship_n_laser](/bat_n_ball.vhd)_** module draws the ship, aliens, and laser(s) on the screen, controlling their movements and actions.
+  * 95% of the gameplay logic can be found in this module.
+  * Specific details can be found in [Code Sources / Modifications](#code-sources--modifications).
 
-* The **_[clk_wiz_0](/clk_wiz_0.vhd)_** and **_[clk_wiz_0_clk_wiz](/clk_wiz_0_clk_wiz.vhd)_** modules were taken from the [given code for Lab 6](https://github.com/byett/dsd/tree/CPE487-Spring2024/Nexys-A7/Lab-6) and left unmodified. These modules do .........
+* The **_[clk_wiz_0](/clk_wiz_0.vhd)_** and **_[clk_wiz_0_clk_wiz](/clk_wiz_0_clk_wiz.vhd)_** modules were taken from the [given code for Lab 6](https://github.com/byett/dsd/tree/CPE487-Spring2024/Nexys-A7/Lab-6) and left unmodified. These modules control the clock processes of the NexysA7 board.
 
-* The **_[vga_sync](/vga_sync.vhd)_** module uses a clock to drive horizontal and vertical counters h_cnt and v_cnt, respectively.
+* The **_[vga_sync](/vga_sync.vhd)_** module (also given and unmodified) uses a clock to drive horizontal and vertical counters h_cnt and v_cnt, respectively.
   * These counters are then used to generate the various timing signals.
   * The vertical and horizontal sync waveforms, vsync and hsync, will go directly to the VGA display with the column and row address, pixel_col and pixel_row, of the current [pixel](https://en.wikipedia.org/wiki/Pixel) being displayed.
   * This module also takes as input the current red, green, and blue video data and gates it with a signal called video_on.
@@ -79,6 +74,8 @@
 
 * Click 'Program Device' then xc7a100t_0 to download space_invaders.bit to the Nexys A7-100T board
 
-## Summary
+## Summary / Results
 
 ...
+
+![image](battle.jpg)
