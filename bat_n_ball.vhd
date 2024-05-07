@@ -378,7 +378,7 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
                 END IF;
             END LOOP;
         END LOOP;
-        IF    (lives = 3 OR lives = 2 OR lives = 1) AND pixel_row >= 10 AND pixel_row <= 35 AND pixel_col >= 680 AND pixel_col <= 710 AND game_on = '1' THEN lives_on <= '1';
+        IF    (lives = 3 OR lives = 2 OR lives = 1) AND pixel_row >= 5 AND pixel_row <= 35 AND pixel_col >= 680 AND pixel_col <= 710 AND game_on = '1' THEN lives_on <= '1';
         ELSIF (lives = 3 OR lives = 2) AND pixel_row >= 5 AND pixel_row <= 35 AND pixel_col >= 720 AND pixel_col <= 750 AND game_on = '1' THEN lives_on <= '1';
         ELSIF  lives = 3 AND pixel_row >= 5 AND pixel_row <= 35 AND pixel_col >= 760 AND pixel_col <= 790 AND game_on = '1' THEN lives_on <= '1';
         ELSE lives_on <= '0';
