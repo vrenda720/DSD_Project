@@ -280,7 +280,7 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
             FOR j IN 0 TO 15 LOOP
                 FOR i IN 0 TO 175 LOOP
                     IF (pixel_col >= 400 - (88 * text_size) + text_size * i) AND (pixel_col < 400 - (88 * text_size) + text_size * (i + 1)) AND (pixel_row >= 300 - (8 * text_size) + text_size * j) AND (pixel_row < 300 - (8 * text_size) + text_size * (j + 1)) AND
-                    to_start(j)(175 - i) = '1' AND flash_on = '1' THEN IF (win = '0' OR lose = '0' OR quit2 = '0') THEN text_on <= '1'; END IF;
+                    to_start(j)(175 - i) = '1'AND quit2 = '0' AND win = '0' AND lose = '0' AND flash_on = '1' THEN IF (win = '0' OR lose = '0' OR quit2 = '0') THEN text_on <= '1'; END IF;
                     ELSIF (pixel_col >= 400 - (88 * text_size) + text_size * i) AND (pixel_col < 400 - (88 * text_size) + text_size * (i + 1)) AND (pixel_row >= 400 - (8 * text_size) + text_size * j) AND (pixel_row < 400 - (8 * text_size) + text_size * (j + 1)) AND
                     to_continue(j)(175 - i) = '1' AND win = '1' AND flash_on = '1' THEN text_on <= '1';
                     ELSIF (pixel_col >= 400 - (88 * text_size) + text_size * i) AND (pixel_col < 400 - (88 * text_size) + text_size * (i + 1)) AND (pixel_row >= 400 - (8 * text_size) + text_size * j) AND (pixel_row < 400 - (8 * text_size) + text_size * (j + 1)) AND
