@@ -344,7 +344,7 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
             IF alien_on_screen = 0 AND game_on = '1' THEN win <= '1'; END IF;
     END PROCESS;
 
-    draw_text : PROCESS (pixel_row, pixel_col, win_on, lose_on, win, lose, quit2, you_win, you_lose, game_on, text_on, to_start, to_continue, to_restart)
+    draw_text : PROCESS (pixel_row, pixel_col, win_on, lose_on, win, lose, quit2, you_win, you_lose, game_on, text_on, to_start, to_continue, to_restart, lives, lives_label, lives_on)
     BEGIN
         win_on <= '0';
         lose_on <= '0';
