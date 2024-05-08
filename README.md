@@ -179,6 +179,7 @@
 ![image](./newgame.jpg)
 * The player will be able to move their ship left and right by pressing BTNL and BTNR respectively.
 * Pressing BTNC will allow the player to shoot back at the aliens. Hitting an alien with a laser will cause that alien to disappear and the players score will increase, the player's score is visable on the FPGA board itself.
+![image](./scoreincreasing.gif)
 * By eliminating all the aliens on the screen, the player will have won that round and a screen will appear that says, "You Win" and "Press BTNU to Continue". If the player chooses to continue, they will keep their score and more aliens will appear but this time they will move faster.
 ![image](./Wingif.gif)
 * If the player is unable to dodge the lasers being shot at them and lose all 3 of their lives, a screen will appear that says, "You Lose" and "Press BTNU to Restart". When the player presses BTNU, new aliens will appear and their score will be reset.
