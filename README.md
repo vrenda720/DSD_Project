@@ -9,6 +9,8 @@
 
 ![Real Game GIF](https://codeheir.com/wp-content/uploads/2019/03/done.gif)
 
+> TODO: Describe regular space invaders gameplay in a few bullets
+
 * Our goal in making this project is to mimic the gameplay of the Space Invaders video game (Above) as closely as possible.
 * ...
 * ...
@@ -16,13 +18,15 @@
 
 ## Neccessary Hardware
 
-* NexysA7-100T FPGA Board
+* [Nexys A7-100T FPGA Board](https://digilent.com/shop/nexys-a7-fpga-trainer-board-recommended-for-ece-curriculum/)
 * Computer with *[Vivado](https://www.xilinx.com/products/design-tools/vivado.html)* installed
 * Micro-USB Cable
 * VGA Cable
 * Monitor/TV with VGA input or VGA adapter
 
 ## Module Overview
+
+> TODO: Add leddec16 module
 
 * The **_[ship_n_laser](/bat_n_ball.vhd)_** module draws the ship, aliens, and laser(s) on the screen, controlling their movements and actions.
   * 95% of the gameplay logic can be found in this module.
@@ -56,7 +60,7 @@
 
 ## Code Sources / Modifications
 
-...
+> TODO: List processes in *ship_n_laser* and describe logic for each one
 
 ## Hardware Instructions
 
@@ -65,6 +69,8 @@
 ![image (1)](https://github.com/vrenda720/DSD_Project/assets/91331978/40603d61-35d2-4873-a231-258c75c2a731)
 
 ## Vivado Project Instructions
+
+> TODO: (Maybe) Add pictures
 
 ### 1. Clone this github repository to your PC (Or Manually download the files)
 
@@ -112,6 +118,15 @@
 
 ## Gameplay Summary
 
-...
+> TODO: Include sentence description and video/GIF for each of the following:
+>  * Flashing text after first programmed
+>  * Game in action
+>    * Losing lives when hit
+>    * Aliens disappearing when shot
+>    * Score going up when aliens hit
+>  * Game win + Win Screen
+>  * Game loss (out of lives) + Lose Screen
+>  * Game loss (Aliens fall too low) + Lose Screen
+>  * Game quit + Lose screen
 
 ![image](battle.jpg)
