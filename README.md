@@ -8,13 +8,14 @@
 ## Expected Behavior
 
 ![Real Game GIF](https://codeheir.com/wp-content/uploads/2019/03/done.gif)
-
-> TODO: Describe regular space invaders gameplay in a few bullets
+<!-- 
+> TODO: Describe regular space invaders gameplay in a few bullets -->
 
 * Our goal in making this project is to mimic the gameplay of the Space Invaders video game (Above) as closely as possible.
-* ...
-* ...
-* ...
+* The player should be able to move left and right to dodge enemy lasers.
+* Aliens should appear on the screen and slowly move towards the player while also shooting at the them.
+* The player has multiple lives that decrease when they are hit by an alien's laser.
+* The player's score should increase whenever an alien is eliminated. 
 
 ## Neccessary Hardware
 
@@ -189,3 +190,33 @@
 ![image](./Invasionlose.gif)
 
 ![image](battle.jpg)
+
+## Summary
+
+### Contributions
+Moshe:
+ - All text graphics
+ - Added in text flashing
+ - Added in aliens (movement/shape)
+ - Added in lives
+ - Added in quit feature
+ - Added to README
+
+Vincent:
+ - Ship graphic (I hate triangles)
+ - Laser-Alien collision
+ - Laser-Player collision
+ - Added in player's laser (movement/shape)
+ - Added in enemy laser (movement/shape/randomeness)
+ - Made score display on FPGA board
+ - Added to README
+
+### Timeline
+
+
+### Difficulties
+
+* Some processes would not work correctly if they did not wait until the rising edge of v_sync even if the logic within the processes were correct. This took a lot of time to realize.
+* Triangles were somewhat difficult to add in. The fact that the origin for the coordinate system is on the top-left and not the bottom-left created some confusion when making the processes that drew out triangles.
+* Keeping track of 23 aliens and their movement/collisions was difficult so we turned things like the position of each alien and if each alien should appear on the screen into an array that can be easily looped through.
+* There did not seem to be a built in random number generator so we decided to streamline the process of random number generation by compiling an extensive array of predetermined random values for efficient utilization.
