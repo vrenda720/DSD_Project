@@ -42,29 +42,23 @@
   * Note that red, green, and blue video are each represented as 1-bit (on-off) quantities.
   * This is sufficient resolution for our application.
 
-* The **_[adc_if](/adc_if.vhd)_** module (also given and unmodified) converts the serial data from both channels of the ADC into 12-bit parallel format.
-  * When the CS line of the ADC is taken low, it begins a conversion and serially outputs a 16-bit quantity on the next 16 falling edges of the ADC serial clock.
-  * The data consists of 4 leading zeros followed by the 12-bit converted value.
-  * These 16 bits are loaded into a 12-bit shift register from the least significant end.
-  * The top 4 zeros fall off the most significant end of the shift register leaving the 12-bit data in place after 16 clock cycles.
-  * When CS goes high, this data is synchronously loaded into the two 12-bit parallel outputs of the module.
-
 * The **_[space_invaders](/pong_2.vhd)_** module is the top level.
+  * Minor modifications were made to the [given Lab 6 file](https://github.com/moshem1234/dsd/blob/CPE487-Spring2024/Nexys-A7/Lab-6/Alternative/pong_2.vhd) to fit with our adjusted **_[ship_n_laser](/bat_n_ball.vhd)_** module
   * All 5 of the buttons on the lower right of the NexysA7 board are used in this gameplay.
     * BTNU is used to start the game.
     * BTNC is used to shoot the lasers.
     * BTNL and BTNR are used to move the ship left and right, respectively.
     * BTND is used to quit the game.
-  * The process ckp is used to generate timing signals for the VGA and ADC modules.
-  * The output of the adc_if module drives ship_x of the ship_n_laser module.
+  * The process ckp is used to generate timing signals for the VGA module.
 
 ## Code Sources / Modifications
 
+> TODO: Discuss minor changes made to pong_2.vhd and pong_2.xdc
 > TODO: List processes in *ship_n_laser* and describe logic for each one
 
 ## Hardware Instructions
 
-### 1. On your NexysA7 board, connect the VGA port (Red) to your monitor, the USB port (Blue) to your computer, and ensure that the power switch (Purple) is set to "on". Note that adapters may be needed depending on your specific hardware
+### 1. On your Nexys A7 board, connect the VGA port (Red) to your monitor, the USB port (Blue) to your computer, and ensure that the power switch (Purple) is set to "on". Note that adapters may be needed depending on your specific hardware
 
 ![image (1)](https://github.com/vrenda720/DSD_Project/assets/91331978/40603d61-35d2-4873-a231-258c75c2a731)
 
@@ -76,7 +70,7 @@
 
 ### 2. Create a new RTL project _Space_ in Vivado Quick Start
 
-* Import VHDL source files: **_[clk_wiz_0](/clk_wiz_0.vhd)_**, **_[clk_wiz_0_clk_wiz](/clk_wiz_0_clk_wiz.vhd)_**, **_[vga_sync](/vga_sync.vhd)_**, **_[bat_n_ball](/bat_n_ball.vhd)_**, **_[adc_if](/adc_if.vhd)_**, **_[leddec16](/leddec16.vhd)_** and **_[pong_2](/pong_2.vhd)_**
+* Import VHDL source files: **_[clk_wiz_0](/clk_wiz_0.vhd)_**, **_[clk_wiz_0_clk_wiz](/clk_wiz_0_clk_wiz.vhd)_**, **_[vga_sync](/vga_sync.vhd)_**, **_[bat_n_ball](/bat_n_ball.vhd)_**, **_[leddec16](/leddec16.vhd)_** and **_[pong_2](/pong_2.vhd)_**
 
 * Import constraint file: **_[pong_2](/pong_2.xdc)_**
 
