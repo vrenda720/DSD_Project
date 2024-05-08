@@ -27,7 +27,7 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     TYPE LIVES_ARRAY IS ARRAY (0 TO 9) OF STD_LOGIC_VECTOR (47 DOWNTO 0); -- Type definition for 2D vector array
     TYPE INT_ARRAY2 IS ARRAY (0 TO 99) OF INTEGER; -- Type definition for int array
     SIGNAL alien0_x : INTEGER := 50; -- Original alien's starting horizontal position
-    SIGNAL alien0_y : INTEGER := 50; -- Original alien's starting horizontal position
+    SIGNAL alien0_y : INTEGER := 100; -- Original alien's starting vertical position
     SIGNAL alien_x : INT_ARRAY; -- Array of alien x positions
     SIGNAL alien_y : INT_ARRAY; -- Array of alien y positions
     SIGNAL alien_on_screen: STD_LOGIC_VECTOR (22 DOWNTO 0) := (OTHERS => '0'); -- Shut off referencing bit when alien is hit
@@ -228,7 +228,7 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
 
         IF game_on = '0' THEN
             alien0_x <= 50;
-            alien0_y <= 50;
+            alien0_y <= 75;
             aliens_move <= "000000";
             IF start = '1' THEN lose <= '0'; END IF;
         ELSE aliens_move <= aliens_move + movespeed;
@@ -295,7 +295,7 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
         END IF;
         FOR j IN 0 TO 9 LOOP
             FOR i IN 0 TO 47 LOOP
-                IF (pixel_col >= 526 + text_size3 * i) AND (pixel_col < 526 + text_size3 * (i + 1)) AND (pixel_row >= 5 + text_size3 * j) AND (pixel_row < 5 + text_size3 * (j + 1)) AND
+                IF (pixel_col >= 526 + text_size3 * i) AND (pixel_col < 526 + text_size3 * (i + 1)) AND (pixel_row >= 15 + text_size3 * j) AND (pixel_row < 15 + text_size3 * (j + 1)) AND
                 lives_label(j)(47 - i) = '1' AND game_on = '1' THEN text_on <= '1';
                 END IF;
             END LOOP;
