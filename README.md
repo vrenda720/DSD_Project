@@ -174,7 +174,7 @@
 > * Game loss (Aliens fall too low) + Lose Screen
 > * Game quit + Lose screen -->
 * When the bitstream is initially uploaded to the FPGA board, the player will be able see their ship and flashing text that says "Press BTNU to Start".
-![image](./start.jpg)
+![image](./startgif.gif)
 * Once BTNU is clicked, the aliens will appear and start shooting downwards towards the player. The player will have to dodge the enemy lasers and shoot back at the aliens. If an enemy laser hits the player they will lose one of the lives that are indicated on the top right of the screen.
 ![image](./newgame.jpg)
 * The player will be able to move their ship left and right by pressing BTNL and BTNR respectively.
