@@ -59,7 +59,14 @@
 
 ## Code Sources / Modifications
 
-> TODO: Discuss minor changes made to pong_2.vhd and pong_2.xdc
+### Modifications from [Lab 6 Alternate Code](https://github.com/byett/dsd/blob/CPE487-Spring2024/Nexys-A7/Lab-6/Alternative) ([pong_2.vhd/space_invaders.vhd](/pong_2.vhd) and [pong_2.xdc/space_invaders.xdc](/pong_2.xdc))
+
+* Changed entity name from 'pong' to 'space_invaders'
+* Changed all instances of 'bat' to 'ship' and 'ball' to 'laser'
+* Initialized ship_x position to `CONV_STD_LOGIC_VECTOR(400,11)` in order to start the ship in the center of the screen.
+* Added/Modified btnu (start), btnd (quit), and btnc (shoot) input ports and mapped accordingly to ship_n_laser component
+* Added 'score' output port to ship_n_laser component and mapped to leddec 'data' port
+
 > TODO: List processes in *ship_n_laser* and describe logic for each one
 
 ## Hardware Instructions
