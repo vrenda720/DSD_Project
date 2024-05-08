@@ -40,6 +40,9 @@
   * Specific details can be found in [Code Sources / Modifications](#code-sources--modifications).
 
 * The **_[clk_wiz_0](/clk_wiz_0.vhd)_** and **_[clk_wiz_0_clk_wiz](/clk_wiz_0_clk_wiz.vhd)_** modules were taken from the [given code for Lab 6](https://github.com/byett/dsd/tree/CPE487-Spring2024/Nexys-A7/Lab-6) and left unmodified. These modules control the clock processes of the Nexys A7 board.
+  * The Xilinx [Clocking Wizard](https://www.xilinx.com/products/intellectual-property/clocking_wizard.html)
+  * [7 Series FPGAs Clocking Resources User Guide](https://www.xilinx.com/support/documentation/user_guides/ug472_7Series_Clocking.pdf)
+  * CLKOUT0_DIVIDE_F in Line 124 of clk_wiz_0_clk_wiz.vhd was updated from 25.3125 to 25.25 because it shall be a multiple of 0.125
 
 * The **_[vga_sync](/vga_sync.vhd)_** module (also given and unmodified) uses a clock to drive horizontal and vertical counters h_cnt and v_cnt, respectively.
   * These counters are then used to generate the various timing signals.
@@ -79,7 +82,7 @@
 
 > TODO: (Maybe) Add pictures
 
-### 1. Clone this github repository to your PC (Or Manually download the files)
+### 1. Clone this github repository to your PC (Or download the files manually)
 
 ### 2. Create a new RTL project _Space_ in Vivado Quick Start
 
