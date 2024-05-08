@@ -26,7 +26,14 @@
 
 ## Module Overview
 
-> TODO: Add leddec16 module
+* The **_[leddec16](/leddec16.vhd)_** module controls the displays on the Nexys A7 board.
+  * By time multiplexing the 7-segment displays that share the same cathode lines (CA to CG), four different digits can appear on one display at a time.
+    * Turn on display 0 for a few milliseconds by enabling its common anode AN0 and decoding data(0~3) to drive the cathode lines.
+    * Switch to display 1 for a few milliseconds by turning   off AN0, turning on AN1 and decoding data(4~7) to drive the cathode lines.
+    * Shift to display 2 for a few milliseconds and then finally display 3 for a few milliseconds, after that go   back and start again at display 0.
+    * While each digit is thus illuminated only one quarter of the time, it will appear to the naked eye that they're all on continuously.
+  * The multiplexing clock (above) is controlled via the 'dig' input.
+  * The score to display is controlled from the 'data' input.
 
 * The **_[ship_n_laser](/bat_n_ball.vhd)_** module draws the ship, aliens, and laser(s) on the screen, controlling their movements and actions.
   * 95% of the gameplay logic can be found in this module.
@@ -36,14 +43,14 @@
 
 * The **_[vga_sync](/vga_sync.vhd)_** module (also given and unmodified) uses a clock to drive horizontal and vertical counters h_cnt and v_cnt, respectively.
   * These counters are then used to generate the various timing signals.
-  * The vertical and horizontal sync waveforms, vsync and hsync, will go directly to the VGA display with the column and row address, pixel_col and pixel_row, of the current [pixel](https://en.wikipedia.org/wiki/Pixel) being displayed.
+  * The vertical and horizontal sync waveforms, vsync and hsync, will go directly to the VGA display with the column and row address, pixel_col and pixel_row, of the current pixel being displayed.
   * This module also takes as input the current red, green, and blue video data and gates it with a signal called video_on.
   * This ensures that no video is sent to the display during the sync and blanking periods.
   * Note that red, green, and blue video are each represented as 1-bit (on-off) quantities.
   * This is sufficient resolution for our application.
 
 * The **_[space_invaders](/pong_2.vhd)_** module is the top level.
-  * Minor modifications were made to the [given Lab 6 file](https://github.com/moshem1234/dsd/blob/CPE487-Spring2024/Nexys-A7/Lab-6/Alternative/pong_2.vhd) to fit with our adjusted **_[ship_n_laser](/bat_n_ball.vhd)_** module
+  * Minor modifications were made to the [given Lab 6 file](https://github.com/byett/dsd/blob/CPE487-Spring2024/Nexys-A7/Lab-6/Alternative/pong_2.vhd) to fit with our adjusted **_[ship_n_laser](/bat_n_ball.vhd)_** module
   * All 5 of the buttons on the lower right of the Nexys A7 board are used in this gameplay.
     * BTNU (Up) is used to start the game.
     * BTNC (Center) is used to shoot the lasers.
@@ -112,14 +119,15 @@
 ## Gameplay Summary
 
 > TODO: Include sentence description and video/GIF for each of the following:
->  * Flashing text after first programmed
->  * Game in action
->    * Losing lives when hit
->    * Aliens disappearing when shot
->    * Score going up when aliens hit
->  * Game win + Win Screen
->  * Game loss (out of lives) + Lose Screen
->  * Game loss (Aliens fall too low) + Lose Screen
->  * Game quit + Lose screen
+>
+> * Flashing text after first programmed
+> * Game in action
+>   * Losing lives when hit
+>   * Aliens disappearing when shot
+>   * Score going up when aliens hit
+> * Game win + Win Screen
+> * Game loss (out of lives) + Lose Screen
+> * Game loss (Aliens fall too low) + Lose Screen
+> * Game quit + Lose screen
 
 ![image](battle.jpg)
