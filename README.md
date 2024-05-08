@@ -14,6 +14,14 @@
 * ...
 * ...
 
+## Neccessary Hardware
+
+* NexysA7-100T FPGA Board
+* Computer with *[Vivado](https://www.xilinx.com/products/design-tools/vivado.html)* installed
+* Micro-USB Cable
+* VGA Cable
+* Monitor/TV with VGA input or VGA adapter
+
 ## Module Overview
 
 * The **_[ship_n_laser](/bat_n_ball.vhd)_** module draws the ship, aliens, and laser(s) on the screen, controlling their movements and actions.
@@ -37,7 +45,7 @@
   * The top 4 zeros fall off the most significant end of the shift register leaving the 12-bit data in place after 16 clock cycles.
   * When CS goes high, this data is synchronously loaded into the two 12-bit parallel outputs of the module.
 
-* The **_[pong](/pong_2.vhd)_** module is the top level.
+* The **_[space_invaders](/pong_2.vhd)_** module is the top level.
   * All 5 of the buttons on the lower right of the NexysA7 board are used in this gameplay.
     * BTNU is used to start the game.
     * BTNC is used to shoot the lasers.
@@ -58,7 +66,9 @@
 
 ## Vivado Project Instructions
 
-### 1. Create a new RTL project _Space_ in Vivado Quick Start
+### 1. Clone this github repository to your PC (Or Manually download the files)
+
+### 2. Create a new RTL project _Space_ in Vivado Quick Start
 
 * Import VHDL source files: **_[clk_wiz_0](/clk_wiz_0.vhd)_**, **_[clk_wiz_0_clk_wiz](/clk_wiz_0_clk_wiz.vhd)_**, **_[vga_sync](/vga_sync.vhd)_**, **_[bat_n_ball](/bat_n_ball.vhd)_**, **_[adc_if](/adc_if.vhd)_**, **_[leddec16](/leddec16.vhd)_** and **_[pong_2](/pong_2.vhd)_**
 
@@ -68,11 +78,11 @@
 
 * Click 'Finish'
 
-### 2. Run Synthesis
+### 3. Run Synthesis
 
-### 3. Run Implementation
+### 4. Run Implementation
 
-### 4. Generate Bitstream, Open Hardware Manager, and Program Device
+### 5. Generate Bitstream, Open Hardware Manager, and Program Device
 
 * Click 'Generate Bitstream'
 
