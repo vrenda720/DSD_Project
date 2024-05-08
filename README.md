@@ -32,7 +32,7 @@
   * 95% of the gameplay logic can be found in this module.
   * Specific details can be found in [Code Sources / Modifications](#code-sources--modifications).
 
-* The **_[clk_wiz_0](/clk_wiz_0.vhd)_** and **_[clk_wiz_0_clk_wiz](/clk_wiz_0_clk_wiz.vhd)_** modules were taken from the [given code for Lab 6](https://github.com/byett/dsd/tree/CPE487-Spring2024/Nexys-A7/Lab-6) and left unmodified. These modules control the clock processes of the NexysA7 board.
+* The **_[clk_wiz_0](/clk_wiz_0.vhd)_** and **_[clk_wiz_0_clk_wiz](/clk_wiz_0_clk_wiz.vhd)_** modules were taken from the [given code for Lab 6](https://github.com/byett/dsd/tree/CPE487-Spring2024/Nexys-A7/Lab-6) and left unmodified. These modules control the clock processes of the Nexys A7 board.
 
 * The **_[vga_sync](/vga_sync.vhd)_** module (also given and unmodified) uses a clock to drive horizontal and vertical counters h_cnt and v_cnt, respectively.
   * These counters are then used to generate the various timing signals.
@@ -44,12 +44,11 @@
 
 * The **_[space_invaders](/pong_2.vhd)_** module is the top level.
   * Minor modifications were made to the [given Lab 6 file](https://github.com/moshem1234/dsd/blob/CPE487-Spring2024/Nexys-A7/Lab-6/Alternative/pong_2.vhd) to fit with our adjusted **_[ship_n_laser](/bat_n_ball.vhd)_** module
-  * All 5 of the buttons on the lower right of the NexysA7 board are used in this gameplay.
-    * BTNU is used to start the game.
-    * BTNC is used to shoot the lasers.
-    * BTNL and BTNR are used to move the ship left and right, respectively.
-    * BTND is used to quit the game.
-  * The process ckp is used to generate timing signals for the VGA module.
+  * All 5 of the buttons on the lower right of the Nexys A7 board are used in this gameplay.
+    * BTNU (Up) is used to start the game.
+    * BTNC (Center) is used to shoot the lasers.
+    * BTNL (Left) and BTNR (Right) are used to move the ship left and right, respectively.
+    * BTND (Down) is used to quit the game.
 
 ## Code Sources / Modifications
 
