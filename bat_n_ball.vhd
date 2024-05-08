@@ -67,6 +67,8 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     SIGNAL text_on : STD_LOGIC; -- Displays text message when set to 1
     SIGNAL lives : INTEGER := 3;
     SIGNAL lives_on : STD_LOGIC;
+    SIGNAL lives_on2 : STD_LOGIC;
+    SIGNAL lives_on3 : STD_LOGIC;
     SIGNAL alien_laser_x : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(0, 11);
     SIGNAL alien_laser_y : STD_LOGIC_VECTOR (10 DOWNTO 0) := CONV_STD_LOGIC_VECTOR(900, 11);
     SIGNAL enemy_laser_inbound : STD_LOGIC := '1';
@@ -90,7 +92,7 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
     -- Set Colors
     red <= laser_on OR lose_on OR alien_laser_on;
     green <= win_on OR ship_on OR (OR_REDUCE(alien_on));
-    blue <= ship_on OR text_on OR lives_on OR alien_laser_on;
+    blue <= ship_on OR text_on OR lives_on OR alien_laser_on OR lives_on2 OR lives_on3;
     
     draw_ship : PROCESS (ship_x, pixel_row, pixel_col) IS
     BEGIN
@@ -298,11 +300,68 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
                 END IF;
             END LOOP;
         END LOOP;
-        IF    (lives = 3 OR lives = 2 OR lives = 1) AND pixel_row >= 5 AND pixel_row <= 35 AND pixel_col >= 680 AND pixel_col <= 710 AND game_on = '1' THEN lives_on <= '1';
-        ELSIF (lives = 3 OR lives = 2) AND pixel_row >= 5 AND pixel_row <= 35 AND pixel_col >= 720 AND pixel_col <= 750 AND game_on = '1' THEN lives_on <= '1';
-        ELSIF  lives = 3 AND pixel_row >= 5 AND pixel_row <= 35 AND pixel_col >= 760 AND pixel_col <= 790 AND game_on = '1' THEN lives_on <= '1';
-        ELSE lives_on <= '0';
+        IF    (lives = 3 OR lives = 2 OR lives = 1) AND game_on = '1' THEN 
+            IF (pixel_col >= 695 AND pixel_row <= 50 - 35 AND pixel_row + 35 >= 50 + (pixel_col - 695) - ship_size) THEN
+            lives_on <= '1';
+            ELSIF (pixel_col <= 695 AND pixel_row <= 50 - 35 AND pixel_row + 35 >= 50 + (695 - pixel_col) - ship_size) THEN
+            lives_on <= '1';
+            ELSIF ((pixel_col >= 695 - 6) OR (695 <= 6)) AND
+             pixel_col <= 695 + 6 AND
+             pixel_row >= 35 - 20 AND
+             pixel_row <= 35 + 20 THEN
+             lives_on <= '1';
+            ELSIF (pixel_col + 6 <= 695 AND pixel_row - 20 <= 35 AND pixel_row - 17 >= 35 + (695 - pixel_col - 6) - ship_size) AND pixel_row >= 30 THEN
+            lives_on <= '1';
+            ELSIF (pixel_col - 6 >= 695 AND pixel_row - 20 <= 35 AND pixel_row - 17 >= 35 + (pixel_col - 695 - 6) - ship_size) AND pixel_col >= 695 THEN
+            lives_on <= '1';
+            ELSE
+            lives_on <= '0';
+            END IF;
+        ELSE
+            lives_on <= '0';
         END IF;
+        IF (lives = 3 OR lives = 2) AND game_on = '1' THEN 
+            IF (pixel_col >= 735 AND pixel_row <= 50 - 35 AND pixel_row + 35 >= 50 + (pixel_col - 735) - ship_size) THEN
+            lives_on2 <= '1';
+            ELSIF (pixel_col <= 735 AND pixel_row <= 50 - 35 AND pixel_row + 35 >= 50 + (735 - pixel_col) - ship_size) THEN
+            lives_on2 <= '1';
+            ELSIF ((pixel_col >= 735 - 6) OR (735 <= 6)) AND
+             pixel_col <= 735 + 6 AND
+             pixel_row >= 35 - 20 AND
+             pixel_row <= 35 + 20 THEN
+             lives_on2 <= '1';
+            ELSIF (pixel_col + 6 <= 735 AND pixel_row - 20 <= 35 AND pixel_row - 17 >= 35 + (735 - pixel_col - 6) - ship_size) AND pixel_row >= 30 THEN
+            lives_on2 <= '1';
+            ELSIF (pixel_col - 6 >= 735 AND pixel_row - 20 <= 35 AND pixel_row - 17 >= 35 + (pixel_col - 735 - 6) - ship_size) AND pixel_col >= 735 THEN
+            lives_on2 <= '1';
+            ELSE
+            lives_on2 <= '0';
+            END IF;
+        ELSE
+            lives_on2 <= '0';
+        END IF;
+--        ELSIF  lives = 3 AND pixel_row >= 5 AND pixel_row <= 35 AND pixel_col >= 760 AND pixel_col <= 790 AND game_on = '1' THEN lives_on <= '1';
+        
+        IF lives = 3 AND game_on = '1' THEN
+            IF (pixel_col >= 775 AND pixel_row <= 50 - 35 AND pixel_row + 35 >= 50 + (pixel_col - 775) - ship_size) THEN
+            lives_on3 <= '1';
+            ELSIF (pixel_col <= 775 AND pixel_row <= 50 - 35 AND pixel_row + 35 >= 50 + (775 - pixel_col) - ship_size) THEN
+            lives_on3 <= '1';
+            ELSIF ((pixel_col >= 775 - 6) OR (775 <= 6)) AND
+             pixel_col <= 775 + 6 AND
+             pixel_row >= 35 - 20 AND
+             pixel_row <= 35 + 20 THEN
+             lives_on3 <= '1';
+            ELSIF (pixel_col + 6 <= 775 AND pixel_row - 20 <= 35 AND pixel_row - 17 >= 35 + (775 - pixel_col - 6) - ship_size) AND pixel_row >= 30 THEN
+            lives_on3 <= '1';
+            ELSIF (pixel_col - 6 >= 775 AND pixel_row - 20 <= 35 AND pixel_row - 17 >= 35 + (pixel_col - 775 - 6) - ship_size) AND pixel_col >= 775 THEN
+            lives_on3 <= '1';
+            ELSE
+            lives_on3 <= '0';
+            END IF;
+        ELSE lives_on3 <= '0';
+        END IF;
+        
     END PROCESS;
 
     flash_text : PROCESS
