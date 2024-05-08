@@ -162,7 +162,7 @@
 
 ## Gameplay Summary
 
-> TODO: Include sentence description and video/GIF for each of the following:
+<!-- > TODO: Include sentence description and video/GIF for each of the following:
 >
 > * Flashing text after first programmed
 > * Game in action
@@ -172,6 +172,19 @@
 > * Game win + Win Screen
 > * Game loss (out of lives) + Lose Screen
 > * Game loss (Aliens fall too low) + Lose Screen
-> * Game quit + Lose screen
+> * Game quit + Lose screen -->
+* When the bitstream is initially uploaded to the FPGA board, the player will be able see their ship and flashing text that says "Press BTNU to Start".
+![image](./start.jpg)
+* Once BTNU is clicked, the aliens will appear and start shooting downwards towards the player. The player will have to dodge the enemy lasers and shoot back at the aliens. If an enemy laser hits the player they will lose one of the lives that are indicated on the top right of the screen.
+![image](./newgame.jpg)
+* The player will be able to move their ship left and right by pressing BTNL and BTNR respectively.
+* Pressing BTNC will allow the player to shoot back at the aliens. Hitting an alien with a laser will cause that alien to disappear and the players score will increase, the player's score is visable on the FPGA board itself.
+* By eliminating all the aliens on the screen, the player will have won that round and a screen will appear that says, "You Win" and "Press BTNU to Continue". If the player chooses to continue, they will keep their score and more aliens will appear but this time they will move faster.
+![image](./Wingif.gif)
+* If the player is unable to dodge the lasers being shot at them and lose all 3 of their lives, a screen will appear that says, "You Lose" and "Press BTNU to Restart". When the player presses BTNU, new aliens will appear and their score will be reset.
+![image](./Liveslose.gif)
+* If the player chooses to quit the current round they are in by pressing BTND, a screen will appear that says, "You Lose" and "Press BTNU to Restart". When the player presses BTNU, new aliens will appear and their score will be reset.
+* If the player is not able to eliminate all the aliens before they touch the ship, a screen will appear that says, "You Lose" and "Press BTNU to Restart". When the player presses BTNU, new aliens will appear and their score will be reset.
+![image](./Invasionlose.gif)
 
 ![image](battle.jpg)
