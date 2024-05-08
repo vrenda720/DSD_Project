@@ -50,6 +50,12 @@
 
 ...
 
+## Hardware Instructions
+
+### 1. On your NexysA7 board, connect the VGA port (Red) to your monitor, the USB port (Blue) to your computer, and ensure that the power switch (Purple) is set to "on". Note that adapters may be needed depending on your specific hardware
+
+![image (1)](https://github.com/vrenda720/DSD_Project/assets/91331978/40603d61-35d2-4873-a231-258c75c2a731)
+
 ## Vivado Project Instructions
 
 ### 1. Create a new RTL project _Space_ in Vivado Quick Start
@@ -74,7 +80,27 @@
 
 * Click 'Program Device' then xc7a100t_0 to download space_invaders.bit to the Nexys A7-100T board
 
-## Summary / Results
+## Alternative Vivado Instructions
+
+### 1. Download **_space_invaders.bit_** from our [releases](https://github.com/vrenda720/DSD_Project/releases) page
+
+### 2. Open Vivado
+
+### 3. From the **Tasks** Menu, select **_Open Hardware Manager_**
+
+![image](https://github.com/vrenda720/DSD_Project/assets/91331978/5241a127-4fb3-4039-ba26-b023f813a07b)
+
+### 4. Select **_Open Target_**, then **_Auto Connect_**
+
+![image](https://github.com/vrenda720/DSD_Project/assets/91331978/08292c79-2daa-47c8-b659-e1426efc806f)
+![image](https://github.com/vrenda720/DSD_Project/assets/91331978/b92b8409-1df6-417c-aa66-4aa514c5f655)
+
+### 5. Click **_Program Device_** then select the downloaded bitstream file, and click **_Program_**
+
+![image](https://github.com/vrenda720/DSD_Project/assets/91331978/04e4beb3-3021-4ab2-8bd4-bc47527d7f69)
+![image](https://github.com/vrenda720/DSD_Project/assets/91331978/9d751b0b-6219-474b-bdcd-30804bd02f2f)
+
+## Gameplay Summary
 
 ...
 
