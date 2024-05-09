@@ -26,7 +26,7 @@
   * By time multiplexing the 7-segment displays that share the same cathode lines (CA to CG), four different digits can appear on one display at a time.
     * Turn on display 0 for a few milliseconds by enabling its common anode AN0 and decoding data(0~3) to drive the cathode lines.
     * Switch to display 1 for a few milliseconds by turning   off AN0, turning on AN1 and decoding data(4~7) to drive the cathode lines.
-    * Shift to display 2 for a few milliseconds and then finally display 3 for a few milliseconds, after that go   back and start again at display 0.
+    * Shift to display 2 for a few milliseconds and then finally display 3 for a few milliseconds, after that go back and start again at display 0.
     * While each digit is thus illuminated only one quarter of the time, it will appear to the naked eye that they're all on continuously.
   * The multiplexing clock (above) is controlled via the 'dig' input.
   * The score to display is controlled from the 'data' input.
@@ -40,9 +40,9 @@
   * Specific details can be found in [Code Sources / Modifications](#code-sources--modifications).
 
 * The **_[clk_wiz_0](/clk_wiz_0.vhd)_** and **_[clk_wiz_0_clk_wiz](/clk_wiz_0_clk_wiz.vhd)_** modules were taken from the [given code for Lab 6](https://github.com/byett/dsd/tree/CPE487-Spring2024/Nexys-A7/Lab-6) and left unmodified. These modules control the clock processes of the Nexys A7 board.
-  * The Xilinx [Clocking Wizard](https://www.xilinx.com/products/intellectual-property/clocking_wizard.html)
-  * [7 Series FPGAs Clocking Resources User Guide](https://www.xilinx.com/support/documentation/user_guides/ug472_7Series_Clocking.pdf)
-  * CLKOUT0_DIVIDE_F in Line 124 of clk_wiz_0_clk_wiz.vhd was updated from 25.3125 to 25.25 because it shall be a multiple of 0.125
+  * The Xilinx [Clocking Wizard](https://www.xilinx.com/products/intellectual-property/clocking_wizard.html).
+  * [7 Series FPGAs Clocking Resources User Guide](https://www.xilinx.com/support/documentation/user_guides/ug472_7Series_Clocking.pdf).
+  * CLKOUT0_DIVIDE_F in Line 124 of clk_wiz_0_clk_wiz.vhd was updated from 25.3125 to 25.25 because it shall be a multiple of 0.125.
 
 * The **_[vga_sync](/vga_sync.vhd)_** module (also given and unmodified) uses a clock to drive horizontal and vertical counters h_cnt and v_cnt, respectively.
   * These counters are then used to generate the various timing signals.
@@ -53,7 +53,7 @@
   * This is sufficient resolution for our application.
 
 * The **_[space_invaders](/space_invaders.vhd)_** module is the top level.
-  * Minor modifications were made to the [given Lab 6 file](https://github.com/byett/dsd/blob/CPE487-Spring2024/Nexys-A7/Lab-6/Alternative/pong_2.vhd) to fit with our adjusted **_[ship_n_laser](/ship_n_laser.vhd)_** module
+  * Minor modifications were made to the [given Lab 6 file](https://github.com/byett/dsd/blob/CPE487-Spring2024/Nexys-A7/Lab-6/Alternative/pong_2.vhd) to fit with our adjusted **_[ship_n_laser](/ship_n_laser.vhd)_** module.
   * All 5 of the buttons on the lower right of the Nexys A7 board are used in this gameplay.
     * BTNU (Up) is used to start the game.
     * BTNC (Center) is used to shoot the lasers.
@@ -64,11 +64,11 @@
 
 ### Modifications from [Lab 6 Alternate Code's pong_2 module](https://github.com/byett/dsd/blob/CPE487-Spring2024/Nexys-A7/Lab-6/Alternative/pong_2.vhd)
 
-* Changed entity name from 'pong' to 'space_invaders'
-* Changed all instances of 'bat' to 'ship' and 'ball' to 'laser'
+* Changed entity name from 'pong' to 'space_invaders'.
+* Changed all instances of 'bat' to 'ship' and 'ball' to 'laser'.
 * Initialized ship_x position to `CONV_STD_LOGIC_VECTOR(400,11)` in order to start the ship in the center of the screen.
-* Added/Modified btnu (start), btnd (quit), and btnc (shoot) input ports and mapped accordingly to ship_n_laser component
-* Added 'score' output port to ship_n_laser component and mapped to leddec 'data' port
+* Added/Modified btnu (start), btnd (quit), and btnc (shoot) input ports and mapped accordingly to ship_n_laser component.
+* Added 'score' output port to ship_n_laser component and mapped to leddec 'data' port.
 
 ### Processes added into [ship_n_laser](/ship_n_laser.vhd) architecture
 
@@ -117,20 +117,20 @@
 ### Alien Array Logic
 
 * A lot of thought was put into the creation of the aliens as there were multiple requirements that needed to be fulfilled:
-  * There needed to be 23 identical aliens
-  * They all needed to be in different locations, but moving in sync with each other
-  * The aliens needed the ability to be shut off one at a time without affecting the other aliens
+  * There needed to be 23 identical aliens.
+  * They all needed to be in different locations, but moving in sync with each other.
+  * The aliens needed the ability to be shut off one at a time without affecting the other aliens.
 * This was able to be accomplished in the following way:
-  * The alien_x and alien_y positions were separated into a 23-index integer array, all based on the original x and y position
-  * This allows each alien to be put in a different position, while all moving in sync
-  * The alien_on and alien_on_screen signals were made as 23-bit logic vectors with each bit corresponding to a specific alien
-    * alien_on_screen controlled the drawing logic for each alien, while alien_on was or_reduced (Every bit orred with each other) into either a '1' or a '0' to turn on the green pixels
+  * The alien_x and alien_y positions were separated into a 23-index integer array, all based on the original x and y position.
+  * This allows each alien to be put in a different position, while all moving in sync.
+  * The alien_on and alien_on_screen signals were made as 23-bit logic vectors with each bit corresponding to a specific alien.
+    * alien_on_screen controlled the drawing logic for each alien, while alien_on was or_reduced (Every bit orred with each other) into either a '1' or a '0' to turn on the green pixels.
   * Lastly, to allow every alien to be drawn distinctively without using 23 different blocks of code, a FOR loop was created to iterate between 0 and 22 to correspond to each index of the arrays.
 
 ### Text Display Logic
 
 * Creating text to display can be quite difficult as the exact pixel-mapping can't be done through patterns the way shapes are.
-* For the text in this project, we avoided using patterns by creating an exact pixel map of the text and storing it into a 2D binary array (Ex. you_win below)
+* For the text in this project, we avoided using patterns by creating an exact pixel map of the text and storing it into a 2D binary array (Ex. you_win below).
 
 ```vhdl
 SIGNAL you_win : ROW_ARRAY :=      ("0000000000000000000000000000000000000000000000000000000000000000",
@@ -299,13 +299,13 @@ Vincent:
 
 ### Timeline
 
-* Thursday May 2: Project/Repo started, triangle ship made, preliminary alien code put in place
-* Friday May 3/Saturday May 4: Combined aliens into arrays called by for loops, built ship shape, created laser shooting and functionality
-* Sunday May 5: Some debugging, added speed increase on game win, added quit option, added preliminary win/lose graphic, started README
-* Monday May 6: Added text, added enemy retaliation, added preliminary lives, condensed code
-* Tuesday May 7: Added lives shape, debugged code
-* Wednesday May 8: Minor debugging, built up README
-* Thursday May 9: Finalized README, prepared submission
+* Thursday May 2: Project/Repo started, triangle ship made, preliminary alien code put in place.
+* Friday May 3/Saturday May 4: Combined aliens into arrays called by for loops, built ship shape, created laser shooting and functionality.
+* Sunday May 5: Some debugging, added speed increase on game win, added quit option, added preliminary win/lose graphic, started README.
+* Monday May 6: Added text, added enemy retaliation, added preliminary lives, condensed code.
+* Tuesday May 7: Added lives shape, debugged code.
+* Wednesday May 8: Minor debugging, built up README.
+* Thursday May 9: Finalized README, prepared submission.
 
 ### Difficulties
 
