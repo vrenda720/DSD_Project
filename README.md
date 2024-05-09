@@ -136,31 +136,59 @@
 
 ## Vivado Project Instructions
 
-> TODO: (Maybe) Add pictures
-
 ### 1. Clone this github repository to your PC (Or download the files manually)
 
-### 2. Create a new RTL project _Space_ in Vivado Quick Start
+![Terminal Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/b3381363-e96e-4cf0-824a-2962cea7008b)
+
+### 2. Create a new RTL project _Space_Invaders_ in Vivado Quick Start
+
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/b2711ad7-41ec-40d8-8338-e88ba8813179)
+
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/1a6f0b8d-9813-4acd-914e-7d3f133c2866)
+
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/49103c72-ef59-4fce-9d53-f25c7b762080)
 
 * Import VHDL source files: **_[clk_wiz_0](/clk_wiz_0.vhd)_**, **_[clk_wiz_0_clk_wiz](/clk_wiz_0_clk_wiz.vhd)_**, **_[vga_sync](/vga_sync.vhd)_**, **_[ship_n_laser](/ship_n_laser.vhd)_**, **_[leddec16](/leddec16.vhd)_** and **_[space_invaders](/space_invaders.vhd)_**
 
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/539b205a-c28a-4954-9438-ac311cb251e3)
+
 * Import constraint file: **_[space_invaders](/space_invaders.xdc)_**
+
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/86af17de-93f8-46c0-95c2-fe1546e2be47)
 
 * Choose Nexys A7-100T board for the project
 
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/bbcb4641-7e0a-4838-80b5-1de6ae8d5c35)
+
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/6eb5a988-a023-465d-8737-532d68c762a9)
+
 * Click 'Finish'
+
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/0cdce3ff-3420-4f4b-a4ac-5fe151650c5b)
 
 ### 3. Run Synthesis
 
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/c63c485f-852d-4f30-b624-3b40da176d78)
+
 ### 4. Run Implementation
+
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/bfaec302-edc0-4216-89f9-512699cb401e)
 
 ### 5. Generate Bitstream, Open Hardware Manager, and Program Device
 
 * Click 'Generate Bitstream'
 
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/0b6f9f52-d0b1-48e5-98c5-8e880403e16f)
+
 * Click 'Open Hardware Manager' and click 'Open Target' then 'Auto Connect'
 
-* Click 'Program Device' then xc7a100t_0 to download space_invaders.bit to the Nexys A7-100T board
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/a9293b81-5bf0-4940-9c70-e8d6c3dadcfd)
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/e43221ec-15d6-434b-847f-aa08302d53e3)
+
+* Click 'Program Device', then select space_invaders.bit to download to the Nexys A7-100T board
+
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/e90815b7-f2e4-4986-8ae2-fb473bbf9f56)
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/ec5acdbf-7f61-48da-b2b8-b0b157f13590)
 
 ## Alternative Vivado Instructions
 
