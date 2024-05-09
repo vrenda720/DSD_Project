@@ -194,7 +194,7 @@
 ![Invasionlose](https://github.com/vrenda720/DSD_Project/assets/91331978/b8e88863-80c5-4cf3-b156-7775281e8854)
 
 
-## Summary
+## Concluding Summary
 
 ### Contributions
 
