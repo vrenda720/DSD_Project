@@ -219,7 +219,7 @@ Vincent:
 * Added in player's laser (movement/shape)
 * Added in enemy laser (movement/shape/randomeness)
 * Made score display on FPGA board
-* Added to README*
+* Added to README
 
 ![battle](https://github.com/vrenda720/DSD_Project/assets/91331978/df49b37c-8393-4c2d-967f-2bfaf791f4b3)
 
