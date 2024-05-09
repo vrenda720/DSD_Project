@@ -8,10 +8,10 @@
 ![Real Game GIF](https://codeheir.com/wp-content/uploads/2019/03/done.gif)
 
 * Our goal in making this project is to mimic the gameplay of the Space Invaders video game (Above) as closely as possible.
-* The player should be able to move left and right to dodge enemy lasers.
-* Aliens should appear on the screen and slowly move towards the player while also shooting at the them.
-* The player has multiple lives that decrease when they are hit by an alien's laser.
-* The player's score should increase whenever an alien is eliminated. 
+  * The player should be able to move left and right to dodge enemy lasers while shooting lasers back.
+  * Aliens should appear on the screen and slowly move towards the player while also shooting at the them.
+  * The player has multiple lives that decrease when they are hit by an alien's laser.
+  * The player's score should increase whenever an alien is eliminated. 
 
 ## Neccessary Hardware
 
