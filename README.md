@@ -66,7 +66,7 @@
 * Added/Modified btnu (start), btnd (quit), and btnc (shoot) input ports and mapped accordingly to ship_n_laser component
 * Added 'score' output port to ship_n_laser component and mapped to leddec 'data' port
 
-### Processes added into ship_n_laser architecture
+### Processes added into [ship_n_laser](/ship_n_laser.vhd) architecture
 
 1. draw_ship
     * This process draws the ship that will be controlled by the player.
