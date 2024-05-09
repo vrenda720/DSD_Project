@@ -50,7 +50,7 @@
   * This is sufficient resolution for our application.
 
 * The **_[space_invaders](/space_invaders.vhd)_** module is the top level.
-  * Minor modifications were made to the [given Lab 6 file](https://github.com/byett/dsd/blob/CPE487-Spring2024/Nexys-A7/Lab-6/Alternative/pong_2.vhd) to fit with our adjusted **_[ship_n_laser](/bat_n_ball.vhd)_** module
+  * Minor modifications were made to the [given Lab 6 file](https://github.com/byett/dsd/blob/CPE487-Spring2024/Nexys-A7/Lab-6/Alternative/pong_2.vhd) to fit with our adjusted **_[ship_n_laser](/ship_n_laser.vhd)_** module
   * All 5 of the buttons on the lower right of the Nexys A7 board are used in this gameplay.
     * BTNU (Up) is used to start the game.
     * BTNC (Center) is used to shoot the lasers.
