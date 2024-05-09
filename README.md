@@ -112,7 +112,16 @@
 
 ### Alien Array Logic
 
-> TODO
+* A lot of thought was put into the creation of the aliens as there were multiple requirements that needed to be fulfilled:
+  * There needed to be 23 identical aliens
+  * They all needed to be in different locations, but moving in sync with each other
+  * The aliens needed the ability to be shut off one at a time without affecting the other aliens
+* This was able to be accomplished in the following way:
+  * The alien_x and alien_y positions were separated into a 23-index integer array, all based on the original x and y position
+  * This allows each alien to be put in a different position, while all moving in sync
+  * The alien_on and alien_on_screen signals were made as 23-bit logic vectors with each bit corresponding to a specific alien
+    * alien_on_screen controlled the drawing logic for each alien, while alien_on was or_reduced (Every bit orred with each other) into either a '1' or a '0' to turn on the green pixels
+  * Lastly, to allow every alien to be drawn distinctively without using 23 different blocks of code, a FOR loop was created to iterate between 0 and 22 to correspond to each index of the arrays.
 
 ### Text Display Logic
 
