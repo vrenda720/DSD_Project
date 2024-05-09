@@ -67,8 +67,8 @@
 * Changed entity name from 'pong' to 'space_invaders'.
 * Changed all instances of 'bat' to 'ship' and 'ball' to 'laser'.
 * Initialized ship_x position to `CONV_STD_LOGIC_VECTOR(400,11)` in order to start the ship in the center of the screen.
-* Added/Modified btnu (start), btnd (quit), and btnc (shoot) input ports and mapped accordingly to ship_n_laser component.
-* Added 'score' output port to ship_n_laser component and mapped to leddec 'data' port.
+* Added/Modified btnu (start), btnd (quit), and btnc (shoot) input ports and mapped accordingly to [ship_n_laser](/ship_n_laser.vhd) component.
+* Added 'score' output port to [ship_n_laser](/ship_n_laser.vhd) component and mapped to [leddec16](/leddec16.vhd)'s 'data' port.
 
 ### Processes added into [ship_n_laser](/ship_n_laser.vhd) architecture
 
