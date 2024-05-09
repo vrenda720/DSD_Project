@@ -159,7 +159,7 @@ ARCHITECTURE Behavioral OF ship_n_laser IS
             END LOOP;
     END PROCESS;
 
-    move_alien_laser: PROCESS is
+    move_alien_laser: PROCESS IS
     VARIABLE temp1 : STD_LOGIC_VECTOR (11 DOWNTO 0);
     VARIABLE laser_start : INTEGER := 0;
         BEGIN
