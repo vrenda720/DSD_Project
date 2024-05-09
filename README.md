@@ -129,7 +129,40 @@
 
 ### Text Display Logic
 
-> TODO
+* Creating text to display can be quite difficult as the exact pixel-mapping can't be done through patterns the way shapes are.
+* For the text in this project, we avoided using patterns by creating an exact pixel map of the text and storing it into a 2D binary array (Ex. you_win below)
+
+```vhdl
+SIGNAL you_win : ROW_ARRAY :=      ("0000000000000000000000000000000000000000000000000000000000000000",
+                                    "0000000000000000000000000000000000000000000000000000000000000000",
+                                    "1100001100000000000000000000000011000011000110000000000000011000",
+                                    "1100001100000000000000000000000011000011000110000000000000111100",
+                                    "1100001100000000000000000000000011000011000000000000000000111100",
+                                    "0110011001111100110011000000000011000011001110001101110000111100",
+                                    "0011110011000110110011000000000011000011000110000110011000011000",
+                                    "0001100011000110110011000000000011011011000110000110011000011000",
+                                    "0001100011000110110011000000000011011011000110000110011000011000",
+                                    "0001100011000110110011000000000011111111000110000110011000000000",
+                                    "0001100011000110110011000000000001100110000110000110011000011000",
+                                    "0011110001111100011101100000000001100110001111000110011000011000",
+                                    "0000000000000000000000000000000000000000000000000000000000000000",
+                                    "0000000000000000000000000000000000000000000000000000000000000000",
+                                    "0000000000000000000000000000000000000000000000000000000000000000",
+                                    "0000000000000000000000000000000000000000000000000000000000000000");
+```
+
+* Lastly, in the [draw_text process](/ship_n_laser.vhd#L308-L345), a nested for loop is created to iterate through every index of the 2D Array, check if the specific pixel should be set to on or off, increasing by the set text size, and then centering the text in the specified area.
+
+```vhdl
+        win_on <= '0';
+        FOR j IN 0 TO 15 LOOP
+            FOR i IN 0 TO 63 LOOP
+                IF (pixel_col >= 400 - (32 * text_size2) + text_size2 * i) AND (pixel_col < 400 - (32 * text_size2) + text_size2 * (i + 1)) AND (pixel_row >= 150 - (8 * text_size2) + text_size2 * j) AND (pixel_row < 150 - (8 * text_size2) + text_size2 * (j + 1)) AND
+                you_win(j)(63 - i) = '1' AND win = '1' THEN win_on <= '1';
+                END IF;
+            END LOOP;
+        END LOOP;
+```
 
 ## Hardware Instructions
 
