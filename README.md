@@ -32,7 +32,10 @@
   * The score to display is controlled from the 'data' input.
 
 * The **_[ship_n_laser](/ship_n_laser.vhd)_** module draws the ship, aliens, and laser(s) on the screen, controlling their movements and actions.
-  * > TODO: Describe ports
+  * The VGA clock (v_sync), RGB signals (red, green, blue), pixel_row, and pixel_col ports are mapped to the [vga_sync](/vga_sync.vhd) module.
+  * The ship_x port is determined by the [ship movement process](/space_invaders.vhd#L79-L89) in [space_invaders.vhd](/space_invaders.vhd).
+  * The ports start, shoot, and quit are mapped directly to the buttons on the Nexys A7 board.
+  * The score port outputs into the [leddec16](/leddec16.vhd) module to display the points earned.
   * 95% of the gameplay logic can be found in this module.
   * Specific details can be found in [Code Sources / Modifications](#code-sources--modifications).
 
