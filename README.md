@@ -58,7 +58,7 @@
 
 ## Code Sources / Modifications
 
-### Modifications from [Lab 6 Alternate Code](https://github.com/byett/dsd/blob/CPE487-Spring2024/Nexys-A7/Lab-6/Alternative) ([pong_2.vhd/space_invaders.vhd](/pong_2.vhd) and [pong_2.xdc/space_invaders.xdc](/pong_2.xdc))
+### Modifications from [Lab 6 Alternate Code's pong_2 module](https://github.com/byett/dsd/blob/CPE487-Spring2024/Nexys-A7/Lab-6/Alternative/pong_2.vhd)
 
 * Changed entity name from 'pong' to 'space_invaders'
 * Changed all instances of 'bat' to 'ship' and 'ball' to 'laser'
