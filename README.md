@@ -230,7 +230,7 @@ Vincent:
 * Made score display on FPGA board
 * Added to README
 
-![battle](https://github.com/vrenda720/DSD_Project/assets/91331978/df49b37c-8393-4c2d-967f-2bfaf791f4b3)
+<!-- ![battle](https://github.com/vrenda720/DSD_Project/assets/91331978/df49b37c-8393-4c2d-967f-2bfaf791f4b3) -->
 
 ### Timeline
 
@@ -239,6 +239,8 @@ Vincent:
 ### Difficulties
 
 * Some processes would not work correctly if they did not wait until the rising edge of v_sync even if the logic within the processes were correct. This took a lot of time to realize.
+  * After much experimentation, it was found that the **"move"** processes needed to have the process begin by waiting for the rising edge of v_sync, while the **"draw"** processes were better with a sensitivity list rather than a wait statement.
 * Triangles were somewhat difficult to add in. The fact that the origin for the coordinate system is on the top-left and not the bottom-left created some confusion when making the processes that drew out triangles.
 * Keeping track of 23 aliens and their movement/collisions was difficult so we turned things like the position of each alien and if each alien should appear on the screen into an array that can be easily looped through.
+  * This is more thoroughly discussed in [Alien Array Logic](#Alien-Array-Logic).
 * There did not seem to be a built in random number generator so we decided to streamline the process of random number generation by compiling an extensive array of predetermined random values for efficient utilization.
