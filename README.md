@@ -225,6 +225,8 @@ Vincent:
 
 ### Timeline
 
+> Do we need this?
+
 ### Difficulties
 
 * Some processes would not work correctly if they did not wait until the rising edge of v_sync even if the logic within the processes were correct. This took a lot of time to realize.
