@@ -1,4 +1,3 @@
-
 # Final Project: Space Invaders
 
 ![Space Invaders](https://upload.wikimedia.org/wikipedia/en/0/0f/Space_Invaders_flyer%2C_1978.jpg)
@@ -67,8 +66,6 @@
 * Added/Modified btnu (start), btnd (quit), and btnc (shoot) input ports and mapped accordingly to ship_n_laser component
 * Added 'score' output port to ship_n_laser component and mapped to leddec 'data' port
 
-<!-- > TODO: List processes in *ship_n_laser* and describe logic for each one -->
-
 ### Processes added into [ship_n_laser](/ship_n_laser.vhd) architecture
 
 1. draw_ship
@@ -102,6 +99,14 @@
 8. move_alien_laser
     - This process determines which alien the enemy laser starts from. To simulate that a random alien is shooting at the player, an array of integers from 0 to 22 was created and a variable was created to iterate through that array to get the random number.
     - This process also checks if the player's ship and the enemy laser have collided and decreases the player's lives by 1 if they have collided.
+
+### Alien Array Logic
+
+> TODO
+
+### Text Display Logic
+
+> TODO
 
 ## Hardware Instructions
 
