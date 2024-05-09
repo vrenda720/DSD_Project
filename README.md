@@ -177,17 +177,21 @@
 * When the bitstream is initially uploaded to the FPGA board, the player will be able see their ship and flashing text that says "Press BTNU to Start".
 
 ![startgif](https://github.com/vrenda720/DSD_Project/assets/91331978/f0839c2e-a1d2-4cc7-95eb-690a7558d0d6)
+
 * Once BTNU is clicked, the aliens will appear and start shooting downwards towards the player. The player will have to dodge the enemy lasers and shoot back at the aliens. If an enemy laser hits the player they will lose one of the lives that are indicated on the top right of the screen.
 * The player will be able to move their ship left and right by pressing BTNL and BTNR respectively.
 * Pressing BTNC will allow the player to shoot back at the aliens. Hitting an alien with a laser will cause that alien to disappear and the players score will increase, the player's score is visable on the FPGA board itself.
 
-![image](./scoreincreasing.gif)
+![image](/Img/scoreincreasing.gif)
+
 * By eliminating all the aliens on the screen, the player will have won that round and a screen will appear that says, "You Win" and "Press BTNU to Continue". If the player chooses to continue, they will keep their score and more aliens will appear but this time they will move faster.
 
-![image](./Wingif.gif)
+![image](/Img/Wingif.gif)
+
 * If the player is unable to dodge the lasers being shot at them and lose all 3 of their lives, a screen will appear that says, "You Lose" and "Press BTNU to Restart". When the player presses BTNU, new aliens will appear and their score will be reset.
 
 ![Liveslose](https://github.com/vrenda720/DSD_Project/assets/91331978/f237b627-cd5b-40d4-9094-2f359979d329)
+
 * If the player chooses to quit the current round they are in by pressing BTND, a screen will appear that says, "You Lose" and "Press BTNU to Restart". When the player presses BTNU, new aliens will appear and their score will be reset.
 * If the player is not able to eliminate all the aliens before they pass the ship, a screen will appear that says, "You Lose" and "Press BTNU to Restart". When the player presses BTNU, new aliens will appear and their score will be reset.
 
