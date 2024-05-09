@@ -234,7 +234,13 @@ Vincent:
 
 ### Timeline
 
-> Do we need this?
+* Thursday May 2: Project/Repo started, triangle ship made, preliminary alien code put in place
+* Friday May 3/Saturday May 4: Combined aliens into arrays called by for loops, built ship shape, created laser shooting and functionality
+* Sunday May 5: Some debugging, added speed increase on game win, added quit option, added preliminary win/lose graphic, started README
+* Monday May 6: Added text, added enemy retaliation, added preliminary lives, condensed code
+* Tuesday May 7: Added lives shape, debugged code
+* Wednesday May 8: Minor debugging, built up README
+* Thursday May 9: Finalized README, prepared submission
 
 ### Difficulties
 
