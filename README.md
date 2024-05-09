@@ -1,15 +1,11 @@
 
 # Final Project: Space Invaders
 
-> # **[Project Instructions](https://github.com/moshem1234/dsd/blob/CPE487-Spring2024/Projects/README.md)**
-
 ![Space Invaders](https://upload.wikimedia.org/wikipedia/en/0/0f/Space_Invaders_flyer%2C_1978.jpg)
 
 ## Expected Behavior
 
 ![Real Game GIF](https://codeheir.com/wp-content/uploads/2019/03/done.gif)
-<!-- 
-> TODO: Describe regular space invaders gameplay in a few bullets -->
 
 * Our goal in making this project is to mimic the gameplay of the Space Invaders video game (Above) as closely as possible.
 * The player should be able to move left and right to dodge enemy lasers.
@@ -36,7 +32,7 @@
   * The multiplexing clock (above) is controlled via the 'dig' input.
   * The score to display is controlled from the 'data' input.
 
-* The **_[ship_n_laser](/bat_n_ball.vhd)_** module draws the ship, aliens, and laser(s) on the screen, controlling their movements and actions.
+* The **_[ship_n_laser](/ship_n_laser.vhd)_** module draws the ship, aliens, and laser(s) on the screen, controlling their movements and actions.
   * 95% of the gameplay logic can be found in this module.
   * Specific details can be found in [Code Sources / Modifications](#code-sources--modifications).
 
@@ -53,7 +49,7 @@
   * Note that red, green, and blue video are each represented as 1-bit (on-off) quantities.
   * This is sufficient resolution for our application.
 
-* The **_[space_invaders](/pong_2.vhd)_** module is the top level.
+* The **_[space_invaders](/space_invaders.vhd)_** module is the top level.
   * Minor modifications were made to the [given Lab 6 file](https://github.com/byett/dsd/blob/CPE487-Spring2024/Nexys-A7/Lab-6/Alternative/pong_2.vhd) to fit with our adjusted **_[ship_n_laser](/bat_n_ball.vhd)_** module
   * All 5 of the buttons on the lower right of the Nexys A7 board are used in this gameplay.
     * BTNU (Up) is used to start the game.
@@ -73,7 +69,7 @@
 
 <!-- > TODO: List processes in *ship_n_laser* and describe logic for each one -->
 
-### Processes added into ship_n_laser architecture
+### Processes added into [ship_n_laser](/ship_n_laser.vhd) architecture
 
 1. draw_ship
     - This process draws the ship that will be controlled by the player.
@@ -111,7 +107,7 @@
 
 ### 1. On your Nexys A7 board, connect the VGA port (Red) to your monitor, the USB port (Blue) to your computer, and ensure that the power switch (Purple) is set to "on". Note that adapters may be needed depending on your specific hardware
 
-![image (1)](https://github.com/vrenda720/DSD_Project/assets/91331978/40603d61-35d2-4873-a231-258c75c2a731)
+![Annotated Nexys A7 Board](https://github.com/vrenda720/DSD_Project/assets/91331978/40603d61-35d2-4873-a231-258c75c2a731)
 
 ## Vivado Project Instructions
 
@@ -121,9 +117,9 @@
 
 ### 2. Create a new RTL project _Space_ in Vivado Quick Start
 
-* Import VHDL source files: **_[clk_wiz_0](/clk_wiz_0.vhd)_**, **_[clk_wiz_0_clk_wiz](/clk_wiz_0_clk_wiz.vhd)_**, **_[vga_sync](/vga_sync.vhd)_**, **_[bat_n_ball](/bat_n_ball.vhd)_**, **_[leddec16](/leddec16.vhd)_** and **_[pong_2](/pong_2.vhd)_**
+* Import VHDL source files: **_[clk_wiz_0](/clk_wiz_0.vhd)_**, **_[clk_wiz_0_clk_wiz](/clk_wiz_0_clk_wiz.vhd)_**, **_[vga_sync](/vga_sync.vhd)_**, **_[ship_n_laser](/ship_n_laser.vhd)_**, **_[leddec16](/leddec16.vhd)_** and **_[space_invaders](/space_invaders.vhd)_**
 
-* Import constraint file: **_[pong_2](/pong_2.xdc)_**
+* Import constraint file: **_[space_invaders](/space_invaders.xdc)_**
 
 * Choose Nexys A7-100T board for the project
 
@@ -149,35 +145,23 @@
 
 ### 3. From the **Tasks** Menu, select **_Open Hardware Manager_**
 
-![image](https://github.com/vrenda720/DSD_Project/assets/91331978/5241a127-4fb3-4039-ba26-b023f813a07b)
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/5241a127-4fb3-4039-ba26-b023f813a07b)
 
 ### 4. Select **_Open Target_**, then **_Auto Connect_**
 
-![image](https://github.com/vrenda720/DSD_Project/assets/91331978/08292c79-2daa-47c8-b659-e1426efc806f)
-![image](https://github.com/vrenda720/DSD_Project/assets/91331978/b92b8409-1df6-417c-aa66-4aa514c5f655)
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/08292c79-2daa-47c8-b659-e1426efc806f)
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/b92b8409-1df6-417c-aa66-4aa514c5f655)
 
 ### 5. Click **_Program Device_** then select the downloaded bitstream file, and click **_Program_**
 
-![image](https://github.com/vrenda720/DSD_Project/assets/91331978/04e4beb3-3021-4ab2-8bd4-bc47527d7f69)
-![image](https://github.com/vrenda720/DSD_Project/assets/91331978/9d751b0b-6219-474b-bdcd-30804bd02f2f)
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/04e4beb3-3021-4ab2-8bd4-bc47527d7f69)
+![Vivado Screenshot](https://github.com/vrenda720/DSD_Project/assets/91331978/9d751b0b-6219-474b-bdcd-30804bd02f2f)
 
 ## Gameplay Summary
 
-<!-- > TODO: Include sentence description and video/GIF for each of the following:
->
-> * Flashing text after first programmed
-> * Game in action
->   * Losing lives when hit
->   * Aliens disappearing when shot
->   * Score going up when aliens hit
-> * Game win + Win Screen
-> * Game loss (out of lives) + Lose Screen
-> * Game loss (Aliens fall too low) + Lose Screen
-> * Game quit + Lose screen -->
 * When the bitstream is initially uploaded to the FPGA board, the player will be able see their ship and flashing text that says "Press BTNU to Start".
 ![image](./startgif.gif)
 * Once BTNU is clicked, the aliens will appear and start shooting downwards towards the player. The player will have to dodge the enemy lasers and shoot back at the aliens. If an enemy laser hits the player they will lose one of the lives that are indicated on the top right of the screen.
-![image](./newgame.jpg)
 * The player will be able to move their ship left and right by pressing BTNL and BTNR respectively.
 * Pressing BTNC will allow the player to shoot back at the aliens. Hitting an alien with a laser will cause that alien to disappear and the players score will increase, the player's score is visable on the FPGA board itself.
 ![image](./scoreincreasing.gif)
