@@ -69,45 +69,45 @@
 
 ### Processes added into [ship_n_laser](/ship_n_laser.vhd) architecture
 
-1. [draw_ship](/ship_n_laser.vhd#L97)
+1. [draw_ship](/ship_n_laser.vhd#L97-L115)
     * This process draws the ship that will be controlled by the player.
     * Has multiple if statements to draw the shape of the ship, which is a combination of 4 triangles and a rectangle.
-2. [draw_laser](/ship_n_laser.vhd#L117)
+2. [draw_laser](/ship_n_laser.vhd#L117-L127)
     * This process draws the shape of the laser that the player will shoot from their ship.
     * The laser is a simple rectangle with a height and width that is dependant on the values of the laser_h and laser_w constants.
-3. [move_laser](/ship_n_laser.vhd#L129)
+3. [move_laser](/ship_n_laser.vhd#L129-L153)
     * This process determines the position of the player's laser.
     * The laser will stay in its idle position (just above the ship) if the game is not in play or the laser has not been shot. The "game_on" and "laser_shot" signals determine if the laser stays still or starts moving.
     * The equation to find the next vertical position was taken from the lab 6 code that determined the next position of the ball.
     * This process also has the code that determines if the game is currently in play or not. The game will stop if the player wins, loses, or quits their current round of aliens.
-4. [shoot_laser](/ship_n_laser.vhd#L239)
+4. [shoot_laser](/ship_n_laser.vhd#L239-L269)
     * This process determines if the player's laser should appear on the screen or not.
     * If the player presses BTNC and the game is currently in play then the laser is shot. But if the laser touches the top of the screen or the game is not in play, then the laser will disappear.
     * This process also controls the collisions between the aliens and the player's laser and causes the aliens to disappear and the score to increase when they collide.
     * The X and Y coordinates of the 23 ships are stored in an array so that it is easy to loop through the array and check if the laser was close enough to collide with the alien.
     * This process resets the score whenever the loser does not win the round they are currently on.
     * Lastly, this processes causes the aliens to appear whenever there is a new round and increases their speed to make the game harder after the first round.
-5. [draw_aliens](/ship_n_laser.vhd#L155)
+5. [draw_aliens](/ship_n_laser.vhd#L155-L160)
     * This process controls the shape of the enemy aliens.
     * The aliens are meant to look like UFOs.
     * To do this, the top half of a small semicircle was placed on top of the bottom half of a larger semicircle.
-6. [move_aliens](/ship_n_laser.vhd#L207)
+6. [move_aliens](/ship_n_laser.vhd#L207-L237)
     * This process controls the movement of the aliens.
     * The aliens move side to side and when they hit one of the side walls, they move downwards, closer to the player.
     * This process also causes the player to lose the game if the aliens get too close to the ship.
-7. [draw_alien_laser](/ship_n_laser.vhd#L195)
+7. [draw_alien_laser](/ship_n_laser.vhd#L195-L205)
     * This process draws the shape of the laser that the enemy aliens shoot. It is the same size and shape as the laser that the player shoots.
-8. [move_alien_laser](/ship_n_laser.vhd#L162)
+8. [move_alien_laser](/ship_n_laser.vhd#L162-L193)
     * This process determines which alien the enemy laser starts from. To simulate that a random alien is shooting at the player, an array of integers from 0 to 22 was created and a variable was created to iterate through that array to get the random number.
     * This process also checks if the player's ship and the enemy laser have collided and decreases the player's lives by 1 if they have collided.
-9. [draw_lives](/ship_n_laser.vhd#L271)
+9. [draw_lives](/ship_n_laser.vhd#L271-L306)
     * This process draws the lives on the top left corner of the screen.
     * The lives were drawn in the shape of the spaceship.
     * As the player loses lives (in move_alien_laser), the associated life on the screen will dissapear.
-10. [draw_text](/ship_n_laser.vhd#L308)
+10. [draw_text](/ship_n_laser.vhd#L308-L345)
     * This process draws the text on the screen.
     * This includes the "Lives:" text on the top of the screen, the "You Win"/"You Lose" text when game is won or lost, and the flashing "Press BTNU to Start" text when the game isn't running.
-11. [flash_text](/ship_n_laser.vhd#L347)
+11. [flash_text](/ship_n_laser.vhd#L347-L352)
     * This process controls the flashing of the text at game start, win, or loss.
     * Signal 'flash_clock' iterates at each cycle of v_sync, and each time the limit is reached, the state of the text flips.
 
