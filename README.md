@@ -291,7 +291,7 @@ Vincent:
 * Laser-Alien collision
 * Laser-Player collision
 * Added in player's laser (movement/shape)
-* Added in enemy laser (movement/shape/randomeness)
+* Added in enemy laser (movement/shape/randomness)
 * Made score display on FPGA board
 * Added to README
 
